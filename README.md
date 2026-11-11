@@ -126,8 +126,8 @@ The maths is in `js/golf-core.js` (no DOM, loads in Node); drawing and input are
 
 ## Adding a showcase
 
-1. In `index.html`, add a `<section class="dog" id="my-demo" role="tabpanel">` inside `.showcases`, after the others.
-2. Add its script (classic `<script defer>`) before `js/site.js`.
+1. In `index.html` and again in `demos.html` (same markup, same ids, plus a `.demo-blurb` line), add a `<section class="dog" id="my-demo" role="tabpanel">` inside `.showcases`, after the others.
+2. Add its script (classic `<script defer>`) before `js/site.js`, in both pages.
 3. Add `{ id: 'my-demo', label: 'my demo' }` to `SHOWCASES` at the top of `js/site.js`. `#my-demo` then links to it.
 4. Pause your loop on the section's `showcase:hide` event and resume on `showcase:show` (see the end of `js/dog.js`). Keep it within one screen, no scroll.
 

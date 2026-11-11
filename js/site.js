@@ -22,14 +22,16 @@
   var $ = function (id) { return document.getElementById(id); };
 
   // links
-  $('link-github').href = LINKS.github;
-  $('link-linkedin').href = LINKS.linkedin;
-  $('link-email').href = 'mailto:' + EMAIL;
-  if (EMAIL === 'you@example.com') $('email-wrap').hidden = true;   // don't ship a dead placeholder link
+  if ($('link-github')) {   // home only; demos.html has the plain footer
+    $('link-github').href = LINKS.github;
+    $('link-linkedin').href = LINKS.linkedin;
+    $('link-email').href = 'mailto:' + EMAIL;
+    if (EMAIL === 'you@example.com') $('email-wrap').hidden = true;   // don't ship a dead placeholder link
+  }
 
   // showcase tabs: one panel visible; the others get 'showcase:hide' so they stop running
   var tabBar = $('showcase-tabs'), current = null;
-  var tabs = SHOWCASES.map(function (sc) {
+  var tabs = !tabBar ? [] : SHOWCASES.map(function (sc) {
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'tab'; b.id = 'tab-' + sc.id; b.textContent = sc.label;
     b.setAttribute('role', 'tab'); b.setAttribute('aria-controls', sc.id);
@@ -57,7 +59,7 @@
     var id = location.hash.slice(1);
     return SHOWCASES.some(function (sc) { return sc.id === id; }) ? id : null;
   }
-  tabBar.addEventListener('keydown', function (e) {
+  if (tabBar) tabBar.addEventListener('keydown', function (e) {
     var i = tabs.indexOf(document.activeElement), n = tabs.length, to;
     if (i < 0) return;
     if (e.key === 'ArrowRight') to = (i + 1) % n;
@@ -69,13 +71,13 @@
     tabs[to].focus();
     select(SHOWCASES[to].id, true);
   });
-  window.addEventListener('hashchange', function () { var id = fromHash(); if (id) select(id, false); });
-  select(fromHash() || SHOWCASES[0].id, false);
+  if (tabBar) window.addEventListener('hashchange', function () { var id = fromHash(); if (id) select(id, false); });
+  if (tabBar) select(fromHash() || SHOWCASES[0].id, false);
 
   // projects + preview
   var list = $('project-list'), preview = $('project-preview');
   var PROJECTS = window.PROJECTS || [];   // js/projects.js
-  var links = PROJECTS.map(function (p, i) {
+  var links = !list ? [] : PROJECTS.map(function (p, i) {
     var li = document.createElement('li'), a = document.createElement('a'), arrow = document.createElement('span');
     a.className = 'row';
     a.textContent = p.title;
@@ -100,19 +102,21 @@
     media.hidden = !p.media;
     media.style.cssText = p.media ? 'border-style:solid;background:center/cover no-repeat url("' + encodeURI(p.media) + '")' : '';
   }
-  if (PROJECTS.length) show(0);   // the panel is never empty; it keeps the last project you pointed at
+  if (list && PROJECTS.length) show(0);   // the panel is never empty; it keeps the last project you pointed at
 
   // footer clock
   var clock = $('clock');
   var fmt = new Intl.DateTimeFormat('en-US', { timeZone: TIME_ZONE, hour: 'numeric', minute: '2-digit' });
   function tick() { if (!document.hidden) clock.textContent = fmt.format(new Date()).toLowerCase(); }
-  tick();
-  setInterval(tick, 5000);
-  document.addEventListener('visibilitychange', tick);   // catch up the moment the tab is visible again
+  if (clock) {
+    tick();
+    setInterval(tick, 5000);
+    document.addEventListener('visibilitychange', tick);   // catch up the moment the tab is visible again
+  }
 
   // cursor coordinates
   var coords = $('coords');
-  window.addEventListener('pointermove', function (e) {
+  if (coords) window.addEventListener('pointermove', function (e) {
     coords.textContent = 'x ' + Math.round(e.clientX) + '  y ' + Math.round(e.clientY);
   }, { passive: true });
 })();

@@ -150,6 +150,10 @@ body.sub .page { height: auto; min-height: 100%; grid-template-rows: auto minmax
 .page > main:not(.stage) { max-width: 46em; width: 100%; padding: 28px 0 40px; }
 main h1 { font-size: 34px; font-weight: 400; line-height: 1.15; letter-spacing: -0.005em; }
 main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--ink-2); }
+/* demos.html: a wide scrolling page; the showcase block is full width */
+.page > main.demos { max-width: none; }
+.demo-blurbs { margin: 8px 0 14px; font: 12px/1.6 var(--mono); color: var(--ink-3); }
+.demo-blurb b { color: var(--ink-2); font-weight: 500; margin-right: 8px; }
 .back { font: 12px/1.6 var(--mono); margin: 0 0 18px; }
 .back a { color: var(--ink-2); text-decoration: none; }
 .back a:hover { color: var(--ink); text-decoration: underline; }

@@ -24,13 +24,193 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Silkscreen&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script defer src="js/theme.js"></script>
+  <script defer src="js/brain.js"></script>
+  <script defer src="js/dog.js"></script>
+  <script defer src="js/sfm-core.js"></script>
+  <script defer src="assets/models/lucky-cat.js"></script>
+  <script defer src="assets/models/temple.js"></script>
+  <script defer src="assets/models/snack-machine.js"></script>
+  <script defer src="js/sfm.js"></script>
+  <script defer src="assets/models/golf-props.js"></script>
+  <script defer src="js/golf-core.js"></script>
+  <script defer src="js/golf.js"></script>
+  <script defer src="js/site.js"></script>
 </head>
 <body class="sub">
   <div class="page">
     <nav class="nav" aria-label="site"><a href="index.html">home</a> · <a href="projects/index.html">projects</a> · <a href="demos.html" aria-current="page">demos</a></nav>
-    <main>
+    <main class="demos">
       <h1>demos</h1>
-      <p>the demos live on the home page for now <a href="index.html#dog-lab">→</a></p>
+      <p class="showcase-intro">a few concepts i loved learning. i rebuilt them in voxels so you can learn them too: poke around.</p>
+      <ul class="demo-blurbs">
+        <li class="demo-blurb"><b>dog lab</b> a dog learning to reach a bone by reinforcement learning</li>
+        <li class="demo-blurb"><b>sfm in a box</b> structure from motion, rebuilt from cameras you drag</li>
+        <li class="demo-blurb"><b>gradient golf</b> gradient descent played as voxel mini-golf</li>
+      </ul>
+      <div class="showcases">
+      <div class="tabrow"><div class="tabs" id="showcase-tabs" role="tablist" aria-label="Showcases"></div></div>
+
+      <section class="dog" id="dog-lab" role="tabpanel" aria-label="A dog learning to reach a bone by reinforcement learning">
+        <p class="dog-fallback">A small voxel dog normally learns to find a bone here, live in your browser. It needs canvas and JavaScript to run.</p>
+
+        <div class="dog-live">
+          <div class="dog-head" id="dog-head">
+            <p class="dog-title">live reinforcement learning</p>
+            <button type="button" class="help-btn" id="rl-help" aria-expanded="false" aria-controls="rl-pop" aria-label="what am I looking at?" title="what am I looking at?">?</button>
+            <div class="rl-pop" id="rl-pop" tabindex="-1" hidden>
+              <ul>
+                <li>the dog = the agent; the grid = its world</li>
+                <li>bone +1, gaps −1, each step costs a little = rewards</li>
+                <li>zoomies = exploring: random moves on purpose</li>
+                <li>the little brain = a tiny neural network guessing how good each move is</li>
+                <li>green tiles = where it thinks reward is · dashed line = its plan</li>
+                <li>it all runs live in your browser; nothing is pre-trained</li>
+              </ul>
+            </div>
+          </div>
+          <p class="dog-context" id="dog-context" aria-live="polite">it starts knowing nothing: every move is a guess.</p>
+
+          <div class="dog-view">
+            <canvas id="dog-canvas" tabindex="0" role="application" title="click a piece, then a tile · click the dog to pet it"
+              aria-label="Isometric 6 by 6 grid. A dog is learning to walk to a bone across a river. Arrow keys move the cursor, Enter places the selected piece, or pets the dog if it is on that tile."></canvas>
+
+            <div class="mini" tabindex="0" role="group" aria-label="The dog's neural network" aria-describedby="brain-tip">
+              <canvas id="brain-canvas" width="110" height="80" role="img" aria-label="The dog's neural network: five input groups, a hidden layer, four moves."></canvas>
+              <p id="brain-decision" class="decision">&nbsp;</p>
+              <div id="brain-tip" class="tip" role="tooltip"></div>
+            </div>
+          </div>
+
+          <div class="toolbox" role="toolbar" aria-label="Pieces">
+            <button type="button" data-tool="block" aria-pressed="true" title="block: bridges a gap, or walls off ground">block</button><span aria-hidden="true"> · </span><button type="button" data-tool="treat" aria-pressed="false" title="treat: +0.3, and it grows back 6 steps after it is eaten">treat</button><span aria-hidden="true"> · </span><button type="button" data-tool="ice" aria-pressed="false" title="ice: 35% chance to slide sideways when leaving it">ice</button><span aria-hidden="true"> · </span><button type="button" data-tool="mud" aria-pressed="false" title="mud: walkable, but stepping in costs an extra 0.08">mud</button><span aria-hidden="true"> · </span><button type="button" data-tool="bone" aria-pressed="false" title="small bone: ends the attempt for +0.4 (the big one pays +1). only one on the map">bone</button><span aria-hidden="true"> · </span><button type="button" data-tool="erase" aria-pressed="false" title="erase: remove a piece you placed">erase</button>
+            <button type="button" id="new-day" class="new-day" title="reset the map and the network's weights">↺ new day</button>
+          </div>
+
+          <p class="dog-stats" id="dog-stats">
+            <span title="episode: one run from the start until bone, gap or timeout">attempt <b id="stat-attempt">1</b></span> ·
+            <span title="successful episodes: runs that reached the bone">home <b id="stat-home">0</b></span> ·
+            <span title="epsilon: the chance each move is random exploration">zoomies <b id="stat-eps">90%</b></span> ·
+            <span title="loss EMA: running average of the squared TD error">confusion <b id="stat-loss">.000</b></span>
+          </p>
+
+          <ul class="thoughts" id="thought-log" role="list" aria-label="Thought log: time, what the dog thinks, the real training signal"></ul>
+
+          <p class="sr-only" id="dog-live" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- ═════════ SFM IN A BOX ═════════ -->
+      <section class="dog sfm" id="sfm" role="tabpanel" aria-label="Structure from motion: cameras around a voxel snack machine rebuild it in 3D" hidden>
+        <p class="dog-fallback">A small voxel snack machine normally gets rebuilt in 3D from a few cameras here, live in your browser. It needs canvas and JavaScript to run.</p>
+
+        <div class="dog-live">
+          <div class="dog-head" id="sfm-head">
+            <p class="dog-title">live structure from motion</p>
+            <button type="button" class="help-btn" id="sfm-help" aria-expanded="false" aria-controls="sfm-pop" aria-label="what am I looking at?" title="what am I looking at?">?</button>
+            <div class="rl-pop" id="sfm-pop" tabindex="-1" hidden>
+              <ul>
+                <li>cameras: one view (photo) each</li>
+                <li>coral dots: features worth tracking</li>
+                <li>green lines: matches, same spot in two views</li>
+                <li>triangulation: two rays cross at a 3D point</li>
+                <li>reprojection error: how far points miss their dots</li>
+                <li>refine: bundle adjustment nudges poses and points to shrink it</li>
+                <li>voxels: points binned into a grid; compare: vs the true model</li>
+                <li>real SfM matches by appearance (descriptors); here the matching is given, the geometry is real</li>
+              </ul>
+            </div>
+          </div>
+          <p class="dog-context" id="sfm-context" aria-live="polite">drag the cameras. points seen twice become 3D.</p>
+
+          <div class="sfm-split">
+            <div class="sfm-pane">
+              <p class="sfm-cap"><span class="sfm-lead">real world · </span><span class="sfm-objs" id="sfm-objs" role="group" aria-label="what to scan"><button type="button" id="sfm-obj-snack" aria-pressed="true" title="scan the snack machine: shaded panels and busy snack rows">snacks</button><span aria-hidden="true"> · </span><button type="button" id="sfm-obj-temple" aria-pressed="false" title="scan the Japanese temple">temple</button><span aria-hidden="true"> · </span><button type="button" id="sfm-obj-cat" aria-pressed="false" title="scan the lucky cat: smooth white fur has fewer corners to match">lucky cat</button></span></p>
+              <div class="sfm-scene" id="sfm-scene">
+                <canvas id="sfm-canvas" role="img" aria-label="The real world: an isometric voxel snack machine (or temple, or lucky cat) on a ground tile, ringed by cameras you can drag."></canvas>
+                <button type="button" class="sfm-x" id="sfm-x" title="remove this camera" hidden>×</button>
+              </div>
+            </div>
+            <div class="sfm-pane">
+              <p class="sfm-cap">what it reconstructed<span class="sfm-lead"> · drag to spin</span></p>
+              <canvas id="sfm-recon" class="sfm-recon" tabindex="0" role="img" data-mode="points" aria-label="3D reconstruction. Drag or use the arrow keys to rotate it."></canvas>
+              <div class="sfm-modes" role="group" aria-label="how to show the reconstruction">
+                <button type="button" id="sfm-mode-points" aria-pressed="true" title="the sparse triangulated points, nearer ones larger">points</button><span aria-hidden="true"> · </span><button type="button" id="sfm-mode-voxels" aria-pressed="false" title="bin the points into a coarse voxel grid">voxels</button><span aria-hidden="true"> · </span><button type="button" id="sfm-mode-compare" aria-pressed="false" title="the points inside a faint wireframe of the true model, so gaps and smear show">compare</button>
+              </div>
+            </div>
+          </div>
+          <div class="sfm-strip" id="sfm-strip" role="group" aria-label="What each camera sees. If there are too many to fit, this strip scrolls sideways.">
+            <div class="sfm-strip-in">
+              <canvas id="sfm-thumbs" role="img" title="click a view to select its camera"
+                aria-label="What each camera sees: the object with its detected features as coral dots. Green lines join matches between the selected camera and its best partner."></canvas>
+              <button type="button" class="sfm-film-thumb" id="sfm-film-thumb" role="slider" aria-valuemin="1" aria-valuemax="24" aria-valuenow="1" aria-label="film" title="the film: hover or use the arrow keys to scrub its frames" hidden></button>
+              <button type="button" class="sfm-film-x" id="sfm-film-x" aria-label="remove the film" title="remove the film" hidden>×</button>
+            </div>
+          </div>
+
+          <div class="toolbox" role="toolbar" aria-label="Scan controls">
+            <button type="button" id="sfm-add" title="add a camera in the widest gap on the ring (16 at most)">+ camera</button><span aria-hidden="true"> · </span><button type="button" id="sfm-film" title="walk a phone once round the object: a 24-frame video. filming again replaces it">film it</button><span aria-hidden="true"> · </span><button type="button" id="sfm-refine" title="bundle adjustment: nudge the camera poses and the points until reprojection error shrinks">refine</button><span aria-hidden="true"> · </span><button type="button" id="sfm-rays" aria-pressed="false" title="draw the rays from the selected camera and its partner to their points">show rays</button>
+          </div>
+
+          <p class="dog-stats" id="sfm-stats">
+            <span title="views: each camera is one photo of the object">cameras <b id="sfm-stat-cams">0</b></span> ·
+            <span title="frames: the film's video frames. they add views, but you can't drag them">frames <b id="sfm-stat-frames">0</b></span> ·
+            <span title="feature pairs: the same landmark found in two views">matches <b id="sfm-stat-matches">0</b></span> ·
+            <span title="landmarks seen by two or more cameras, triangulated from their noisy pixels">3D points <b id="sfm-stat-points">0</b></span> ·
+            <span title="RMS distance between where each 3D point projects and where its feature was detected">reprojection error <b id="sfm-stat-err">—</b></span>
+          </p>
+
+          <p class="sr-only" id="sfm-live" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- ═════════ GRADIENT GOLF ═════════ -->
+      <section class="dog golf" id="golf" role="tabpanel" aria-label="Gradient golf: gradient descent played as voxel mini-golf" hidden>
+        <p class="dog-fallback">A voxel mini-golf course normally teaches gradient descent here, live in your browser. It needs canvas and JavaScript to run.</p>
+
+        <div class="dog-live">
+          <div class="dog-head" id="golf-head">
+            <p class="dog-title">live gradient descent</p>
+            <button type="button" class="help-btn" id="golf-help" aria-expanded="false" aria-controls="golf-pop" aria-label="what am I looking at?" title="what am I looking at?">?</button>
+            <div class="rl-pop" id="golf-pop" tabindex="-1" hidden>
+              <ul>
+                <li>the hill = the loss; lower is better</li>
+                <li>the ball = the model's parameters θ</li>
+                <li>green arrow = −gradient: straight downhill</li>
+                <li>each hop = one step: θ ← θ − learning rate × gradient</li>
+                <li>momentum keeps part of the last step; adam rescales each direction</li>
+                <li>corner map = the same hill from above, as contour lines</li>
+                <li>score = steps taken; par = what a well-tuned swing needs</li>
+              </ul>
+            </div>
+          </div>
+          <p class="dog-context" id="golf-context" aria-live="polite"></p>
+
+          <div class="golf-body">
+            <div class="golf-view">
+              <p class="sfm-cap"><span class="sfm-objs" id="golf-holes" role="group" aria-label="hole"></span></p>
+              <canvas id="golf-canvas" role="img" aria-label="An isometric voxel golf course whose height is the loss. A white ball hops downhill one optimizer step at a time, leaving red dots; a green arrow shows the downhill direction; a red flag marks the minimum. A small map in the corner shows the same path from above."></canvas>
+              <p class="dog-stats" id="golf-readout">loss <b id="golf-loss0">–</b> → <b id="golf-loss">–</b> · <b id="golf-steps">0</b> steps · par <b id="golf-par">–</b></p>
+            </div>
+            <div class="golf-side">
+              <div class="toolbox" role="group" aria-label="optimizer">
+                <button type="button" id="golf-opt-sgd" aria-pressed="true" title="plain gradient descent: step = −learning rate × gradient">sgd</button><span aria-hidden="true"> · </span><button type="button" id="golf-opt-momentum" aria-pressed="false" title="heavy ball: each step keeps β of the one before">momentum</button><span aria-hidden="true"> · </span><button type="button" id="golf-opt-adam" aria-pressed="false" title="adam: momentum, with each direction's step scaled by its recent gradient size">adam</button>
+              </div>
+              <div class="golf-sliders">
+                <label>learning rate <input type="range" id="golf-lr" min="0" step="1"> <output id="golf-lr-val" for="golf-lr"></output></label>
+                <label>momentum β <input type="range" id="golf-beta"> <output id="golf-beta-val" for="golf-beta"></output></label>
+              </div>
+              <div class="golf-actions">
+                <button type="button" class="golf-swing" id="golf-swing" title="run the optimizer from where the ball lies">swing</button>
+                <button type="button" id="golf-next" hidden>next hole →</button>
+                <button type="button" id="golf-reset" title="ball back on the tee, this hole's score cleared">↺ reset hole</button>
+              </div>
+              <p class="dog-stats" id="golf-line"></p>
+              <table class="golf-card" id="golf-card" aria-label="scorecard"></table>
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>
     </main>
     <footer class="foot">
       <p class="foot-line">

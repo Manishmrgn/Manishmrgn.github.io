@@ -836,6 +836,32 @@ def split_checks(browser):
     page.close()
 
 
+def demos_checks(browser):
+    ids = ["dog-lab", "sfm", "golf"]
+    for size, label in ((DESKTOP_VIEWPORT, "desktop"), (MOBILE_VIEWPORT, "390px")):
+        page = open_page(browser, size, path="demos.html")
+        navs = page.eval_on_selector_all(".nav a", "els => els.map(a => [a.textContent, a.getAttribute('aria-current')])")
+        check(f"demos ({label}): nav marks demos current", navs == [["home", None], ["projects", None], ["demos", "page"]], str(navs))
+        seen = []
+        for i in ids:
+            page.click(f"#tab-{i}")
+            page.wait_for_timeout(300)
+            seen.append([page.is_visible(f"#{j}") for j in ids])
+        check(f"demos ({label}): the three tabs switch panels", seen == [[k == n for k in range(3)] for n in range(3)], str(seen))
+        check(f"demos ({label}): a one-line description for each demo", page.locator(".demo-blurb").count() == 3)
+        o = page.evaluate("document.documentElement.scrollWidth - innerWidth")
+        check(f"demos ({label}): no horizontal overflow", o <= 0, f"{o}px")
+        check(f"demos ({label}): no console errors", not page.errors, "; ".join(page.errors))
+        page.close()
+    page = open_page(browser, DESKTOP_VIEWPORT, path="demos.html")
+    page.evaluate("window.__hid = []; ['dog-lab','sfm','golf'].forEach(i => document.getElementById(i).addEventListener('showcase:hide', () => window.__hid.push(i)))")
+    page.click("#tab-sfm")
+    page.click("#tab-golf")
+    hid = page.evaluate("window.__hid")
+    check("demos: switching tabs sends showcase:hide to the hidden demo", hid == ["dog-lab", "sfm"], str(hid))
+    page.close()
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(channel=BROWSER_CHANNEL, headless=True, args=["--no-sandbox"])
@@ -939,6 +965,7 @@ def main():
         page.close()
 
         project_checks(browser)
+        demos_checks(browser)
         sfm_checks(browser)
         split_checks(browser)
         golf_checks(browser)
