@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const root = process.env.BUILD_ROOT || path.join(__dirname, '..'); // BUILD_ROOT lets tests build into a temp copy
 const PROJECTS = require(path.join(root, 'js', 'projects.js'));
-const SITE = 'https://manishmrgn.github.io/';
+const SITE = 'https://manishwaranmurugan.com/';
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 

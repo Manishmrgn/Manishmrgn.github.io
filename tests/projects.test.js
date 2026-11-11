@@ -50,7 +50,7 @@ test('there are 6 projects, newest year first', () => {
 const { spawnSync } = require('child_process');
 const os = require('os');
 const { render } = require(path.join(root, 'tools', 'build.js'));
-const SITE = 'https://manishmrgn.github.io/';
+const SITE = 'https://manishwaranmurugan.com/';
 const pages = render();
 
 test('render() has projects/index.html, one page per slug, and sitemap.xml', () => {

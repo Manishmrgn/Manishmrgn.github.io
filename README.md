@@ -181,9 +181,8 @@ procedural voxels instead. Full details are in `LICENSES.md`.
 - Blocks: Isometric Blocks by Kenney (www.kenney.nl), CC0.
 - Bones, treat, gap and shadow were made for this project.
 
-## Deploy free on GitHub Pages
+## Deploy (GitHub Pages + custom domain)
 
-1. Create a repository and push this folder's contents to it (`index.html` at the root).
-2. On GitHub: Settings → Pages → Build and deployment → Source: "Deploy from a branch".
-3. Pick your branch (`main`) and the `/ (root)` folder, then Save.
-4. A minute later the site is live at `https://<username>.github.io/<repo>/`.
+Live at https://manishwaranmurugan.com/ from the `main` branch of `Manishmrgn/Manishmrgn.github.io` (root folder).
+Push to `main` and Pages redeploys in a minute or two. `CNAME` holds the domain; DNS is at GoDaddy:
+four `A` records on `@` (185.199.108.153, .109, .110, .111) and `www` CNAME → `manishmrgn.github.io`.
