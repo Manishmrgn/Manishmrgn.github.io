@@ -75,14 +75,14 @@
       figures: [] },
 
     { slug: 'raster', title: 'True-scale 3D from drones', where: 'IISc Aerospace (AIRL)', year: 2024,
-      oneLiner: 'Structure from motion that recovers real-world scale with YOLOv8 and ArUco markers.',
+      oneLiner: 'Marker detection and 3D cleanup that give drone reconstructions real-world scale.',
       tags: ['sfm', 'yolov8', 'aruco', 'unreal'],
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan (VIT)', 'advisor: Dr. Suresh Sundaram (IISc)'],
       pdf: 'assets/papers/raster-poster.pdf', pdfLabel: 'poster',
       overview: {
         problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and my capstone work built its detection and subtraction parts.',
         built: [
-          'RASTER, a pipeline that detects ArUco markers with YOLOv8 and uses them to compute an absolute scale factor',
+          'marker detection with YOLOv8 and cv2.aruco, feeding RASTER\'s absolute-scale step',
           'synthetic training data from Unreal Engine 5, annotated automatically, with randomized markers, poses, lighting, blur and lens distortion',
           '3D background subtraction (parallelized KD-Tree/FLANN and Octree) to pull an object out of a scene',
           'a real dataset shot with a DSLR, one image every 5 degrees around a crate carrying a marker (72 images per circle), plus Unreal-generated scenes',
