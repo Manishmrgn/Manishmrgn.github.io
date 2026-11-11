@@ -70,7 +70,7 @@
     a.className = 'row';
     a.textContent = p.title;
     a.href = 'projects/' + p.slug + '.html';
-    arrow.textContent = '↗';
+    arrow.textContent = '→';   // an internal page, not an outside link
     arrow.setAttribute('aria-hidden', 'true');
     a.appendChild(arrow);
     a.addEventListener('mouseenter', function () { show(i); });
@@ -87,8 +87,9 @@
     preview.querySelector('.preview-desc').textContent = p.oneLiner;
     preview.querySelector('.preview-tags').textContent = p.tags.join(' · ');
     var media = preview.querySelector('.preview-media');
-    media.hidden = !p.media;
-    media.style.cssText = p.media ? 'border-style:solid;background:center/cover no-repeat url("' + encodeURI(p.media) + '")' : '';
+    var src = p.media || (p.figures[0] && p.figures[0].src);   // the project's own picture unless it names one
+    media.hidden = !src;
+    media.style.cssText = src ? 'background-image:url("' + encodeURI(src) + '")' : '';
   }
   if (list && PROJECTS.length) show(0);   // the panel is never empty; it keeps the last project you pointed at
 

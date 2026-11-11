@@ -553,8 +553,20 @@ def project_checks(browser):
     navs = page.eval_on_selector_all(".keys a", "els => els.map(a => [a.textContent, a.getAttribute('href'), a.getAttribute('aria-current')])")
     check("home: nav keys home · projects · demos, home marked current",
           navs == [["home", "index.html", "page"], ["projects", "projects/index.html", None], ["demos", "demos.html", None]], str(navs))
+    arrows = page.eval_on_selector_all("#project-list a.row span", "els => els.map(e => e.textContent)")
+    check("home: every row ends with → (an internal page)", arrows and set(arrows) == {"→"}, str(arrows))
+    pv = page.evaluate("(() => { const m = document.querySelector('.preview-media'); return [m.hidden, getComputedStyle(m).backgroundImage, m.getBoundingClientRect().height]; })()")
+    check("home: the first project's preview shows its first figure", not pv[0] and PROJECT_SLUGS[0] in pv[1] and pv[2] >= 60, str(pv))
     hrefs = page.eval_on_selector_all("#project-list a.row", "els => els.map(a => a.getAttribute('href'))")
     check("home: one row per project, in order, each links to projects/<slug>.html", hrefs == [f"projects/{s}.html" for s in PROJECT_SLUGS], str(hrefs))
+    page.close()
+
+    page = open_page(browser, MOBILE_VIEWPORT)
+    ph = page.evaluate("""(() => { const r = s => document.querySelector(s).getBoundingClientRect(), v = s => getComputedStyle(document.querySelector(s)).display !== 'none';
+      return { workAboveDemos: r('.work').bottom <= r('.showcases').top, introAboveWork: r('.intro').bottom <= r('.work').top,
+               point: v('.point'), preview: v('.preview'), crop: v('.crop') }; })()""")
+    check("home at 390px: intro, then the projects, then the demos; no stray →, no preview, no crop marks",
+          ph == {"workAboveDemos": True, "introAboveWork": True, "point": False, "preview": False, "crop": False}, str(ph))
     page.close()
 
     page = open_page(browser, DESKTOP_VIEWPORT, path="projects/index.html")
