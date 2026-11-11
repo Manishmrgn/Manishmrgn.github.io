@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qwen3 agent harness — Manish Murugan</title>
+  <meta name="description" content="A harness that runs a Qwen3 32B agent with sandboxed code and context compaction.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://manishmrgn.github.io/projects/agent-harness.html">
+  <meta name="theme-color" id="tc-light" content="#f5f4ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" id="tc-dark" content="#141413" media="(prefers-color-scheme: dark)">
+  <script>var d=document.documentElement,t;try{t=localStorage.getItem("portfolio-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.theme=t</script>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Manish Murugan">
+  <meta property="og:title" content="Qwen3 agent harness — Manish Murugan">
+  <meta property="og:description" content="A harness that runs a Qwen3 32B agent with sandboxed code and context compaction.">
+  <meta property="og:url" content="https://manishmrgn.github.io/projects/agent-harness.html">
+  <meta property="og:image" content="https://manishmrgn.github.io/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Silkscreen&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/theme.js"></script>
+</head>
+<body>
+  <div class="page">
+    <nav class="nav" aria-label="site"><a href="../index.html">home</a> · <a href="../projects/index.html" aria-current="page">projects</a> · <a href="../demos.html">demos</a></nav>
+    <main>
+      <p class="back"><a href="index.html">← all projects</a></p>
+      <article class="proj">
+        <h1>Qwen3 agent harness</h1>
+        <p class="proj-meta">Dimaag-AI · 2026</p>
+        <ul class="proj-tags"><li>llm</li><li>agents</li><li>vlm</li></ul>
+        <div class="proj-grid">
+          <section><h2>problem</h2><p>an agent with many tools burns its context window on schemas and old turns before it does any work.</p></section>
+          <section><h2>what I built</h2><ul><li>a Qwen3 32B agent harness with network-isolated code execution</li><li>LLM-based context compaction, and deduplicated tool schemas</li><li>document VLM and RAG ingest tools, and a benchmark of Qwen3-VL 32B and Qwen2.5-VL 72B</li></ul></section>
+          <section><h2>results</h2><ul><li>deduplicating tool schemas cut the fixed per-call cost 45% (9.2k to 5.0k tokens)</li><li>85% of a 32k context window stays free</li></ul></section>
+        </div>
+      </article>
+      <p class="back"><a href="index.html">← all projects</a></p>
+    </main>
+    <footer class="foot">
+      <p class="foot-line">
+        <a href="https://github.com/Manishmrgn">github</a> ·
+        <a href="https://www.linkedin.com/in/Manishmrgn">linkedin</a> ·
+        <a href="../assets/resume.pdf" target="_blank" rel="noopener">resume</a> ·
+        <button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

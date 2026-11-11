@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beach trash from the air — Manish Murugan</title>
+  <meta name="description" content="Spotting coastal debris in drone images with YOLOv8 and Wise-IoU.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://manishmrgn.github.io/projects/debris.html">
+  <meta name="theme-color" id="tc-light" content="#f5f4ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" id="tc-dark" content="#141413" media="(prefers-color-scheme: dark)">
+  <script>var d=document.documentElement,t;try{t=localStorage.getItem("portfolio-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.theme=t</script>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Manish Murugan">
+  <meta property="og:title" content="Beach trash from the air — Manish Murugan">
+  <meta property="og:description" content="Spotting coastal debris in drone images with YOLOv8 and Wise-IoU.">
+  <meta property="og:url" content="https://manishmrgn.github.io/projects/debris.html">
+  <meta property="og:image" content="https://manishmrgn.github.io/assets/projects/debris/detections.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Silkscreen&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/theme.js"></script>
+</head>
+<body>
+  <div class="page">
+    <nav class="nav" aria-label="site"><a href="../index.html">home</a> · <a href="../projects/index.html" aria-current="page">projects</a> · <a href="../demos.html">demos</a></nav>
+    <main>
+      <p class="back"><a href="index.html">← all projects</a></p>
+      <article class="proj">
+        <h1>Beach trash from the air</h1>
+        <p class="proj-meta">VIT · 2024 · with Meghana V Gaonkar, Leona E Joseph, advisor: Dr. R Balamurugan</p>
+        <ul class="proj-tags"><li>yolov8</li><li>uav</li><li>wise-iou</li></ul>
+        <div class="proj-grid">
+          <section><h2>problem</h2><p>plastic on shorelines is hard to survey on foot; drones see a lot of coast, but something has to find the debris in the images.</p></section>
+          <section><h2>what I built</h2><ul><li>a benchmark of five YOLOv8 variants (n, s, m, l, x) with and without a Wise-IoU loss</li><li>hyperparameter tuning and custom augmentation on a dataset combining two UAV sources (772 beach images and 40 river images), all labelled as one class, garbage</li><li>offline augmentation of 40 annotated images into 120 more (blur, rotation, scale), for 892 images split 636 / 128 / 128 into train, validation and test</li></ul></section>
+          <section><h2>results</h2><ul><li>YOLOv8m went from 81.7% to 86.1% mAP@50</li><li>Wise-IoU hurt the largest models</li><li>YOLOv8l and YOLOv8x lost a lot of precision with Wise-IoU, which the paper puts down to computational limits</li><li>hyperparameter tuning (rotation 45 degrees, flips 0.5 and 0.6, MixUp 0.05) lifted YOLOv8s from 80.8% to 83.5% mAP@50</li></ul></section>
+        </div>
+      <div class="proj-figs">
+        <figure><img src="../assets/projects/debris/detections.jpg" alt="four aerial photos of water and beach with red boxes around detected bottles and other trash" loading="lazy"><figcaption>yolov8 detections on drone shots of water and shoreline</figcaption></figure>
+        <figure><img src="../assets/projects/debris/pr-curves.jpg" alt="three precision-recall curves for yolov8m: standard 0.818, with tuned hyperparameters 0.847, with hyperparameters and wiou 0.861 mAP@0.5" loading="lazy"><figcaption>yolov8m precision-recall: 0.818, 0.847, then 0.861 mAP@0.5</figcaption></figure>
+      </div>
+      <div class="proj-pdf">
+        <object data="../assets/papers/uav-debris-paper.pdf" type="application/pdf"><a href="../assets/papers/uav-debris-paper.pdf">open paper</a></object>
+        <p><a href="../assets/papers/uav-debris-paper.pdf" target="_blank" rel="noopener">open paper</a> · <a href="../assets/papers/uav-debris-paper.pdf" download>download</a></p>
+      </div>
+      </article>
+      <p class="back"><a href="index.html">← all projects</a></p>
+    </main>
+    <footer class="foot">
+      <p class="foot-line">
+        <a href="https://github.com/Manishmrgn">github</a> ·
+        <a href="https://www.linkedin.com/in/Manishmrgn">linkedin</a> ·
+        <a href="../assets/resume.pdf" target="_blank" rel="noopener">resume</a> ·
+        <button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

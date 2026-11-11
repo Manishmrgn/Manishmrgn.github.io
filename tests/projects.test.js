@@ -46,5 +46,73 @@ test('there are 7 projects, newest year first', () => {
   PROJECTS.forEach((p, i) => assert.ok(!i || p.year <= PROJECTS[i - 1].year, p.slug));
 });
 
+// ── generator ──
+const { spawnSync } = require('child_process');
+const { render } = require(path.join(root, 'tools', 'build.js'));
+const SITE = 'https://manishmrgn.github.io/';
+const pages = render();
+
+test('render() has projects/index.html, one page per slug, and sitemap.xml', () => {
+  assert.ok(pages['projects/index.html'] && pages['sitemap.xml']);
+  PROJECTS.forEach(p => assert.ok(pages['projects/' + p.slug + '.html'], p.slug));
+});
+
+test('each project page has its own <title>, meta description, canonical and og:title/description/url/image', () => {
+  PROJECTS.forEach(p => {
+    const h = pages['projects/' + p.slug + '.html'];
+    assert.ok(/<title>[^<]*<\/title>/.test(h) && h.includes(p.title.replace(/&/g, '&amp;')), p.slug + ' title');
+    assert.ok(/<meta name="description" content="[^"]+"/.test(h), p.slug + ' desc');
+    assert.ok(h.includes('<link rel="canonical" href="' + SITE + 'projects/' + p.slug + '.html">'), p.slug + ' canonical');
+    ['og:title', 'og:description', 'og:url', 'og:image'].forEach(k => assert.ok(h.includes('property="' + k + '"'), p.slug + ' ' + k));
+    assert.ok(h.includes('property="og:image" content="' + SITE + (p.figures[0] ? p.figures[0].src : 'og-image.png') + '"'), p.slug + ' og:image');
+  });
+});
+
+test('html special characters are escaped', () => {
+  const fake = Object.assign({}, PROJECTS[0], { slug: 'fake', title: 'A & <B> "C"', figures: [], pdf: undefined, pdfLabel: undefined });
+  const h = render([fake])['projects/fake.html'];
+  const want = 'A &amp; &lt;B&gt; &quot;C&quot;';
+  assert.ok(new RegExp('<title>[^<]*' + want).test(h), 'title');
+  assert.ok(h.includes('property="og:title" content="' + want), 'og:title');
+  assert.ok(!h.includes('<B>'));
+});
+
+test('pages without a pdf have no <object> and no download link', () => {
+  PROJECTS.filter(p => !p.pdf).forEach(p => {
+    const h = pages['projects/' + p.slug + '.html'];
+    assert.ok(!h.includes('<object') && !h.includes('download'), p.slug);
+  });
+});
+
+test('pages with a pdf have both', () => {
+  PROJECTS.filter(p => p.pdf).forEach(p => {
+    const h = pages['projects/' + p.slug + '.html'];
+    assert.ok(h.includes('<object data="../' + p.pdf + '"') && /<a [^>]*download/.test(h), p.slug);
+  });
+});
+
+test('every relative href/src in a generated page resolves to a file', () => {
+  Object.keys(pages).filter(k => k.endsWith('.html')).forEach(k => {
+    const re = /\b(?:href|src|data)="([^"]*)"/g; let m;
+    while ((m = re.exec(pages[k]))) {
+      const u = m[1];
+      if (/^([a-z]+:|#|\/\/)/i.test(u)) continue;
+      const f = path.join(root, path.dirname(k), u.split('#')[0].split('?')[0]);
+      assert.ok(fs.existsSync(f), k + ' -> ' + u);
+    }
+  });
+});
+
+test('build --check passes', () => {
+  const r = spawnSync('node', [path.join(root, 'tools', 'build.js'), '--check'], { encoding: 'utf8' });
+  assert.strictEqual(r.status, 0, r.stdout + r.stderr);
+});
+
+test('sitemap lists /, /projects/, /demos.html and every project page', () => {
+  const s = pages['sitemap.xml'];
+  [SITE, SITE + 'projects/', SITE + 'demos.html'].concat(PROJECTS.map(p => SITE + 'projects/' + p.slug + '.html'))
+    .forEach(u => assert.ok(s.includes('<loc>' + u + '</loc>'), u));
+});
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);
