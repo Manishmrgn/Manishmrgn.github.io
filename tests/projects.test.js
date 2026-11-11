@@ -37,6 +37,10 @@ test('every pdf and figure src exists on disk', () => {
   });
 });
 
+test('pdf and pdfLabel are both present or both absent', () => {
+  PROJECTS.forEach(p => assert.strictEqual(!!p.pdf, !!p.pdfLabel, p.slug));
+});
+
 test('there are 7 projects, newest year first', () => {
   assert.strictEqual(PROJECTS.length, 7);
   PROJECTS.forEach((p, i) => assert.ok(!i || p.year <= PROJECTS[i - 1].year, p.slug));

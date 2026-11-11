@@ -20,7 +20,7 @@
         ],
         results: [
           'synthetic artifacts get caught and retried instead of leaking into the training data',
-          'constraints live in versioned prompts, so a change to them is easy to review'
+          'the routing constraints are versioned YAML, so each change to them is tracked'
         ]
       },
       figures: [] },
@@ -68,8 +68,8 @@
           'player-NPC interactions that can change the narrative'
         ],
         results: [
-          'the whole thing runs offline on one machine',
-          'what the player says can change where the story goes'
+          'NPC dialogue and world updates come from an offline LLaMA-3 model running in Docker',
+          'player-NPC interactions can change the narrative'
         ]
       },
       figures: [] },
@@ -80,16 +80,19 @@
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan (VIT)', 'advisor: Dr. Suresh Sundaram (IISc)'],
       pdf: 'assets/papers/raster-poster.pdf', pdfLabel: 'poster',
       overview: {
-        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale.',
+        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and my capstone work built its detection and subtraction parts.',
         built: [
           'RASTER, a pipeline that detects ArUco markers with YOLOv8 and uses them to compute an absolute scale factor',
           'synthetic training data from Unreal Engine 5, annotated automatically, with randomized markers, poses, lighting, blur and lens distortion',
-          '3D background subtraction (parallelized KD-Tree/FLANN and Octree) to pull an object out of a scene'
+          '3D background subtraction (parallelized KD-Tree/FLANN and Octree) to pull an object out of a scene',
+          'a real dataset shot with a DSLR, one image every 5 degrees around a crate carrying a marker (72 images per circle), plus Unreal-generated scenes',
+          'ten rounds of detector training, using k-fold validation and synthetic scenes to hunt down false positives, and oriented bounding boxes instead of square ones'
         ],
         results: [
           'detection reached 98.6% mAP@50 over 10 YOLOv8 + cv2.aruco pipelines',
           'absolute scale recovered within 0.2 cm on an 18 cm marker',
-          'background subtraction on 10M-point clouds went from 27 h to 40 s (2,400x faster)'
+          'background subtraction on 10M-point clouds went from 27 h to 40 s (2,400x faster)',
+          'on a synthetic room scene, a 0.1 distance threshold cleaned out the sparse stray points better than 0.01 and recovered the skull model'
         ]
       },
       figures: [] },
@@ -101,11 +104,12 @@
       overview: {
         problem: 'neural radiance fields give good 3D reconstructions but training them is slow.',
         built: [
-          'a CUDA-optimized NeRF',
+          'a CUDA-optimized NeRF, with Nerfstudio in the toolchain',
           'an end-to-end 3D reconstruction flow alongside Structure from Motion (Meshroom), with ArUco-based metric calibration to recover true scale for as-built modeling'
         ],
         results: [
-          'a working end-to-end reconstruction that comes out at true scale'
+          'a working end-to-end reconstruction that comes out at true scale',
+          'Meshroom (SfM) supplies the meshes and camera poses, Nerfstudio the radiance-field side, and ArUco markers fix the scale'
         ]
       },
       figures: [] },
@@ -119,11 +123,14 @@
         problem: 'plastic on shorelines is hard to survey on foot; drones see a lot of coast, but something has to find the debris in the images.',
         built: [
           'a benchmark of five YOLOv8 variants (n, s, m, l, x) with and without a Wise-IoU loss',
-          'hyperparameter tuning and custom augmentation on a dataset combining two UAV sources'
+          'hyperparameter tuning and custom augmentation on a dataset combining two UAV sources (772 beach images and 40 river images), all labelled as one class, garbage',
+          'offline augmentation of 40 annotated images into 120 more (blur, rotation, scale), for 892 images split 636 / 128 / 128 into train, validation and test'
         ],
         results: [
           'YOLOv8m went from 81.7% to 86.1% mAP@50',
-          'Wise-IoU hurt the largest models'
+          'Wise-IoU hurt the largest models',
+          'YOLOv8l and YOLOv8x lost a lot of precision with Wise-IoU, which the paper puts down to computational limits',
+          'hyperparameter tuning (rotation 45 degrees, flips 0.5 and 0.6, MixUp 0.05) lifted YOLOv8s from 80.8% to 83.5% mAP@50'
         ]
       },
       figures: [] }
