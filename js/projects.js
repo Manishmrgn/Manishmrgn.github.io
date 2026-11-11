@@ -95,7 +95,11 @@
           'on a synthetic room scene, a 0.1 distance threshold cleaned out the sparse stray points better than 0.01 and recovered the skull model'
         ]
       },
-      figures: [] },
+      figures: [
+        { src: 'assets/projects/raster/pipeline.jpg', alt: 'flow diagram of the RASTER pipeline from input images and fiducial detection to an absolute-scaled, oriented 3D reconstruction', caption: 'the raster pipeline, from marker detection to a scaled mesh' },
+        { src: 'assets/projects/raster/rescaled.jpg', alt: 'two views of a crate mesh with an aruco marker, measured before and after rescaling, with an 18 cm real marker and a scale factor of 4.1425', caption: 'marker edges measured 4 cm before rescale, 18 cm after' },
+        { src: 'assets/projects/raster/detect.jpg', alt: 'synthetic scene of a small hut on a wooden deck with a green box around it and two aruco markers on the floor', caption: 'aruco markers and the object found in a synthetic scene' }
+      ] },
 
     { slug: 'nerf', title: 'NeRF, faster', where: 'IISc', year: 2024,
       oneLiner: 'CUDA kernels to speed up neural radiance field training.',
@@ -133,7 +137,10 @@
           'hyperparameter tuning (rotation 45 degrees, flips 0.5 and 0.6, MixUp 0.05) lifted YOLOv8s from 80.8% to 83.5% mAP@50'
         ]
       },
-      figures: [] }
+      figures: [
+        { src: 'assets/projects/debris/detections.jpg', alt: 'four aerial photos of water and beach with red boxes around detected bottles and other trash', caption: 'yolov8 detections on drone shots of water and shoreline' },
+        { src: 'assets/projects/debris/pr-curves.jpg', alt: 'three precision-recall curves for yolov8m: standard 0.818, with tuned hyperparameters 0.847, with hyperparameters and wiou 0.861 mAP@0.5', caption: 'yolov8m precision-recall: 0.818, 0.847, then 0.861 mAP@0.5' }
+      ] }
   ];
   // ═══════════════════════════════════════════════════════════════════════════
 
