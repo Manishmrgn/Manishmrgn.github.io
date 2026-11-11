@@ -1,4 +1,4 @@
-# Manish Murugan — portfolio
+# Manishwaran Murugan — portfolio
 
 A one-screen personal site. On the left: who I am and four projects. On the right: my dog, as a
 voxel sprite, learning to reach a bone with reinforcement learning — live, in your browser.

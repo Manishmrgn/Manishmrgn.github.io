@@ -33,7 +33,7 @@ function layout({ title, desc, url, image, body, b = '../', cur }) {
   <link rel="icon" href="${b}favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="${b}apple-touch-icon.png">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Manish Murugan">
+  <meta property="og:site_name" content="Manishwaran Murugan">
   <meta property="og:title" content="${t}">
   <meta property="og:description" content="${d}">
   <meta property="og:url" content="${esc(url)}">
@@ -93,7 +93,7 @@ function projectPage(p) {
       </article>
       ${back}`;
   return layout({
-    title: p.title + ' — Manish Murugan', desc: p.oneLiner, cur: 'projects',
+    title: p.title + ' — Manishwaran Murugan', desc: p.oneLiner, cur: 'projects',
     url: SITE + 'projects/' + p.slug + '.html',
     image: p.figures[0] ? SITE + p.figures[0].src : null, body
   });
@@ -109,7 +109,7 @@ function indexPage(projects) {
           <a href="${esc(p.slug)}.html">read more →</a>
         </li>`).join('');
   return layout({
-    title: 'Projects — Manish Murugan', desc: 'Selected ML, computer vision and 3D projects by Manish Murugan.',
+    title: 'Projects — Manishwaran Murugan', desc: 'Selected ML, computer vision and 3D projects by Manishwaran Murugan.',
     url: SITE + 'projects/', cur: 'projects',
     body: `      <h1>projects</h1>\n      <ul class="cards">${cards}\n      </ul>`
   });

@@ -743,7 +743,7 @@ def split_checks(browser):
     # photo + showcase intro + theme switch
     page = open_page(browser, DESKTOP_VIEWPORT)
     me = page.evaluate("(() => { const i = document.querySelector('.masthead .me'), r = i.getBoundingClientRect(), h = document.querySelector('.masthead h1').getBoundingClientRect(); return { ok: i.complete && i.naturalWidth > 0, w: r.width, h: r.height, left: r.right <= h.left, alt: i.alt }; })()")
-    check("masthead: photo loads, square, 96-104px, left of the name, alt text", me["ok"] and me["w"] == me["h"] and 96 <= me["w"] <= 104 and me["left"] and me["alt"] == "Manish Murugan", str(me))
+    check("masthead: photo loads, square, 96-104px, left of the name, alt text", me["ok"] and me["w"] == me["h"] and 96 <= me["w"] <= 104 and me["left"] and me["alt"] == "Manishwaran Murugan", str(me))
     si = page.evaluate("(() => { const p = document.querySelector('.showcase-intro'), r = p.getBoundingClientRect(), t = document.querySelector('.tabrow').getBoundingClientRect(); return { above: r.bottom <= t.top, lines: Math.round(r.height / parseFloat(getComputedStyle(p).lineHeight)), outside: !p.closest('[role=tabpanel]'), live: p.closest('[aria-live]') !== null, tab: p.tabIndex }; })()")
     check("showcase intro: above the tab row, outside the panels, <= 2 lines, not focusable, no aria-live", si["above"] and si["outside"] and si["lines"] <= 2 and not si["live"] and si["tab"] == -1, str(si))
     tok = "['paper','ink','ink-2','ink-3','accent-text','dog-text'].map(n => getComputedStyle(document.documentElement).getPropertyValue('--' + n).trim()).join()"
