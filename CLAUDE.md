@@ -1,0 +1,45 @@
+# portfolio-voxel: context for Claude Code
+
+Carried over on 2026-11-10 from the claude.ai Chat project "portfolio", chat "Voxel portfolio direction".
+How the site works, what to edit where and how to test is in README.md; this file only holds what lives in that chat.
+
+## Where it stands
+
+Three showcase tabs on the right: dog lab (RL dog + lucky cat), sfm in a box (snack machine default, temple, cat),
+and gradient golf (`#golf`, newest). All three test suites pass:
+
+```
+node tests/brain.test.js
+node tests/sfm.test.js
+node tests/golf.test.js
+```
+
+Gradient golf: 5 holes, total par 38 (bowl 5 / fake hole 6 / ravine 8 / plateau 10 / windy 9). Score = steps (hops),
+not swings. Ball stopping in the fake hole restarts from the tee and keeps the step count. Tab labels were made a bit
+smaller on all three tabs so three tabs + "expand" fit at narrow widths.
+
+Golf props (`assets/models/golf-props.js`): Kenney minigolf windmill (default green/terracotta colours, not the purple
+variant), NZFawkes golf cart (CC BY, credited in footer + LICENSES.md), Kytric tree-3, tree-5, stone-3.
+Deliberately skipped: brown bushes, Kenney flag (custom drooping flag instead), castle.
+VoxelVillagePack (in ../portfolio-voxel-design) has no licence file: keep it out until its source is known.
+
+Source assets live in ../portfolio-voxel-design; screenshots in ../portfolio-voxel-shots.
+
+## Done in Claude Code (2026-11-10)
+
+- Hop timing: `GolfCore.pace()` — hop time ∝ √length (clamped 40–450ms), whole swing ≤ 3s; arc height ∝ length, so the
+  fall looks like constant gravity. Tested in tests/golf.test.js.
+- Golf speech bubble removed (dog lab keeps its bubble). Context line resets to the hole's line when a swing starts.
+- Columns in front of the ball and taller than it are redrawn over it. −gradient arrow is ink on a paper halo.
+- After the cup: "swing again" (fresh try from the tee, hole score cleared) + a separate "next hole →" (#golf-next);
+  "reset hole" hides then, since two buttons just fit the 212px side column.
+- Smoke test runs with `uv run --with playwright python tests/smoke.py` (uses installed Chrome; no Chromium download).
+
+- Resume at assets/resume.pdf (footer link). Projects now link papers in assets/papers/: raster-poster.pdf (IISc RASTER
+  poster, as-is) and uv-debris-paper.pdf (VIT UAV debris paper — a copy with all four authors' emails redacted; the
+  original is in ~/Documents/Resume/Context/IISC; not found on IEEE Xplore as of 2026-11-10, so this is its first public copy).
+
+## Still open
+
+- Hole 5: a lucky momentum setting can sink it in 3 (par 9). Left as is: under par is fine.
+- `EMAIL` in js/site.js is the placeholder `you@example.com` (the email link is hidden until it's set).
