@@ -11,6 +11,10 @@
   var ANIM_MS = 220;       // expand / shrink animation (none under prefers-reduced-motion)
   var STORE_KEY = 'portfolio-split-v2';
   var DESKTOP = '(min-width: 1100px)';   // keep in step with css/style.css, js/dog.js, js/sfm.js
+  // two diagonal arrows, out from the centre (expand) or in to it (shrink); the mono font's ⤢ reads as a tick
+  var ICON = '<svg class="key-icon" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="';
+  var ICON_EXPAND = ICON + 'M6 1h3v3M9 1L5.6 4.4M4 9H1V6M1 9l3.4-3.4"/></svg>';
+  var ICON_SHRINK = ICON + 'M5.6 1.4v3h3M9 1L5.6 4.4M4.4 8.6v-3h-3M1 9l3.4-3.4"/></svg>';
   // ═══════════════════════════════════════════════════════════════════════════
 
   var stage = document.querySelector('.stage'), sep = document.getElementById('split'),
@@ -30,7 +34,7 @@
     stage.style.setProperty('--r', value + 'fr');
     sep.setAttribute('aria-valuenow', String(Math.round(value)));
     var open = value >= (DEFAULT + EXPANDED) / 2;   // "shrink" once past the halfway mark
-    toggle.innerHTML = open ? '<span aria-hidden="true">⤤</span> shrink' : '<span aria-hidden="true">⤢</span> expand';
+    toggle.innerHTML = (open ? ICON_SHRINK : ICON_EXPAND) + (open ? ' shrink' : ' expand');
     toggle.dataset.open = open ? '1' : '';
   }
   function set(v) { stopAnim(); apply(v); save(); }

@@ -104,15 +104,24 @@ test('pages with a pdf link it in the meta line and near the bottom, in a new ta
   });
 });
 
-test('page order: meta, with, tags, hero figure, my part, problem; other figures after the results', () => {
+test('page order: meta, with, tags, my part, hero figure, problem; other figures after the results', () => {
   PROJECTS.forEach(p => {
     const h = pages['projects/' + p.slug + '.html'], at = s => h.indexOf(s);
-    const seq = ['class="proj-meta"', p.with ? 'class="proj-with"' : null, 'class="proj-tags"', p.figures.length ? 'class="proj-hero"' : null,
-      'class="proj-mypart"', '<h2>problem</h2>', '<h2>results</h2>', p.figures.length > 1 ? 'class="proj-figs"' : null].filter(Boolean);
+    const seq = ['class="proj-meta"', p.with ? 'class="proj-with"' : null, 'class="proj-tags"', 'class="proj-mypart"',
+      p.figures.length ? 'class="proj-hero"' : null, '<h2>problem</h2>', '<h2>results</h2>', p.figures.length > 1 ? 'class="proj-figs"' : null].filter(Boolean);
     seq.forEach((k, i) => assert.ok(at(k) > 0 && (!i || at(k) > at(seq[i - 1])), p.slug + ': ' + k));
     const hero = p.figures[0] && h.indexOf(p.figures[0].src, at('<main>'));   // (the head's og:image names it too)
-    if (p.figures[0]) assert.ok(hero > at('class="proj-hero"') && hero < at('class="proj-mypart"'), p.slug + ' hero');
+    if (p.figures[0]) assert.ok(hero > at('class="proj-hero"') && hero < at('<h2>problem</h2>'), p.slug + ' hero');
   });
+});
+
+test('the with line names the advisors once', () => {
+  const { render } = require(path.join(root, 'tools', 'build.js'));
+  const two = render([Object.assign({}, PROJECTS[0], { with: ['A B', 'C D', 'advisor: Dr. E (X)', 'advisor: Dr. F (Y)'] })])['projects/' + PROJECTS[0].slug + '.html'];
+  assert.ok(two.includes('<p class="proj-with">with A B, C D · advisors: Dr. E (X), Dr. F (Y)</p>'), 'two advisors');
+  const one = render([Object.assign({}, PROJECTS[0], { with: ['A B', 'advisor: Dr. E'] })])['projects/' + PROJECTS[0].slug + '.html'];
+  assert.ok(one.includes('<p class="proj-with">with A B · advisor: Dr. E</p>'), 'one advisor');
+  PROJECTS.forEach(p => assert.ok(!/advisor: [^<]*advisor:/.test(pages['projects/' + p.slug + '.html']), p.slug + ' repeats advisor:'));
 });
 
 test('every figure links to its full image in a new tab', () => {

@@ -137,6 +137,14 @@ b { font-weight: inherit; }
 .top-links a { color: var(--ink-2); text-decoration: none; }
 .top-links a:hover { color: var(--ink); text-decoration: underline; }
 .top-links .resume { color: var(--ink); text-decoration: underline; text-decoration-color: currentColor; }
+@media (min-width: 600px) {
+  .masthead { flex-wrap: nowrap; }   /* the keys and links stay on the name's row; the name's lines wrap instead */
+  .top-r { flex: none; }
+}
+@media (min-width: 600px) and (max-width: 1219px) {   /* no room for all four links on one line beside the name: the email gets its own */
+  .top-links .sep:last-of-type { display: none; }
+  .top-links #link-email { display: block; }
+}
 @media (max-width: 599px) {   /* phone: name, then the keys as a full-width row, then the links; every target 44px tall */
   .masthead { flex-direction: column; align-items: stretch; gap: 14px; }
   .top-r { margin-left: 0; align-items: stretch; gap: 4px; }
@@ -145,6 +153,9 @@ b { font-weight: inherit; }
   .top-links { display: flex; flex-wrap: wrap; column-gap: 18px; text-align: left; }
   .top-links a { display: inline-flex; align-items: center; min-height: 44px; }
   .top-links .sep { display: none; }
+  .top-links #link-email { flex-basis: 100%; margin-top: -8px; }   /* its own line, close under the others */
+  .proj-pn > span { display: none; }   /* prev and next each get a line: no dot left hanging */
+  main .proj-pn a { display: flex; }   /* (beats the touch rule's inline-flex below) */
 }
 
 /* ───────── theme switch (in the footer line, after credits) ───────── */
@@ -176,6 +187,11 @@ main h1 { font-size: 34px; font-weight: 400; line-height: 1.15; letter-spacing: 
 main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--ink-2); }
 /* demos.html: a wide scrolling page; the showcase block is full width */
 .page > main.demos { max-width: none; }
+@media (min-width: 1100px) {   /* the blurbs beside the showcase: it gets the width and the page stays one screen */
+  .page > main.demos { display: grid; grid-template-columns: minmax(0, 17em) minmax(0, 1fr); column-gap: clamp(40px, 5vw, 80px); align-items: start; padding-top: 20px; }
+  .demos .demo-blurb { margin-top: 6px; }
+  .demos .showcases { grid-area: auto; }   /* (home places it in the stage's "dog" area) */
+}
 .demo-blurbs { margin: 8px 0 14px; font: 12px/1.6 var(--mono); color: var(--ink-3); }
 .demo-blurb b { color: var(--ink-2); font-weight: 500; margin-right: 8px; }
 .demo-blurb a { color: var(--accent-text); }
@@ -184,11 +200,11 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .back a:hover, .proj-pn a:hover { color: var(--ink); text-decoration: underline; }
 .proj-meta { font: 12px/1.6 var(--mono); color: var(--ink-2); margin-top: 8px; }
 .proj-meta a, .proj-pdf a { color: var(--accent-text); }
-.proj-with { font: 11px/1.6 var(--mono); color: var(--ink-3); margin-top: 2px; }
+.proj-with { font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 2px; }
 .proj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; font: 11px/1.6 var(--mono); color: var(--ink-3); }
 .proj-tags li { padding: 0 8px; border: 1px solid var(--line); border-radius: 10px; }
-.proj-hero { margin-top: 24px; }
-.proj-mypart { margin-top: 24px; font-size: 18px; line-height: 1.5; }
+.proj-mypart { margin-top: 22px; font-size: 18px; line-height: 1.5; }
+.proj-hero { margin-top: 22px; }
 .proj-mypart b { font: 12px/1 var(--mono); color: var(--ink-3); margin-right: 4px; }
 .proj-grid { margin-top: 24px; display: grid; gap: 22px; }
 .proj-grid h2 { margin-bottom: 4px; }
@@ -197,10 +213,10 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .proj-grid li { list-style: disc; margin-top: 4px; }
 .proj-grid li::marker { color: var(--ink-4); }
 .proj-figs { margin-top: 28px; display: grid; gap: 22px; }
-.proj figure { margin: 0; }
-.proj figure a { display: block; width: fit-content; max-width: 100%; }
-.proj figure img { display: block; max-width: 100%; height: auto; max-height: 70vh; object-fit: contain; border: 1px solid var(--line); border-radius: 4px; }   /* tall figures stay within a screen */
-.proj figcaption { font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 6px; }
+.proj figure { display: table; margin: 0 auto; min-width: min(100%, 16em); }   /* shrink-wraps the image, centred; the caption wraps to its width (min-width: a lazy image not loaded yet has none) */
+.proj figure a { display: block; width: fit-content; max-width: 100%; margin: 0 auto; }
+.proj figure img { display: block; max-width: 100%; height: auto; max-height: 45vh; object-fit: contain; border: 1px solid var(--line); border-radius: 4px; }   /* tall figures leave room for the text */
+.proj figcaption { display: table-caption; caption-side: bottom; font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 6px; }
 :root[data-theme="dark"] .proj figure img { filter: brightness(0.92); }   /* the figures are drawn for white paper */
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .proj figure img { filter: brightness(0.92); } }
 .proj-pdf { margin-top: 28px; font: 13px/1.6 var(--mono); }
@@ -234,7 +250,7 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .intro p + p { margin-top: 0.8em; }
 .point { color: var(--accent-text); }
 
-.work { grid-area: work; align-self: stretch; min-height: 0; display: flex; flex-direction: column; }
+.work { grid-area: work; align-self: stretch; min-height: 0; display: flex; flex-direction: column; container-type: inline-size; }
 .work h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--ink-2); margin-bottom: 8px; }
 .work-body { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 32px; max-width: 34em; min-height: 0; }
 .project-list { min-height: 0; overflow-y: auto; padding-right: 2px; }   /* scrolls only when 7 rows do not fit */
@@ -254,19 +270,21 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .preview-desc { font-size: 14px; line-height: 1.45; color: var(--ink-2); margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }   /* one-liners are longer than the old blurbs; the page has the rest */
 .preview-tags { font: 11px/1.6 var(--mono); color: var(--ink-3); margin-top: 4px; }
 .preview-media {
-  flex: 1 1 0; min-height: 34px; margin-top: 10px;
+  height: 112px; margin-top: 10px;
   border: 1px solid var(--line); border-radius: 4px;
-  background: var(--paper) center / contain no-repeat;   /* the whole figure, letterboxed: diagrams must not be cropped */
+  background: var(--paper) center / cover no-repeat;   /* a fixed crop, whatever the figure's shape; the page has the whole figure */
 }
 :root[data-theme="dark"] .preview-media { filter: brightness(0.92); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .preview-media { filter: brightness(0.92); } }
 .preview-media[hidden] { display: none; }
+@container (max-width: 560px) { .preview { display: none; } .work-body { grid-template-columns: minmax(0, 1fr); } }   /* expanded showcase or a narrow window: no room for a preview */
 
 /* ───────── dog widget ───────── */
 .showcases { grid-area: dog; align-self: start; min-width: 0; }
 .showcase-intro { font-size: 15px; font-style: italic; line-height: 1.35; color: var(--ink-2); margin-bottom: 6px; }
 .tabrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 6px; }
 .tabs { display: flex; gap: 14px; }
+.key-icon { display: inline-block; vertical-align: -1px; }
 .key-sm { display: inline-block; height: 22px; margin: -2px 0; padding: 0 7px; font-size: 11px; line-height: 20px; white-space: nowrap; }   /* the nav key, smaller; the negative margin keeps the tab row's height */
 .tab { font: 11px/1.6 var(--mono); color: var(--ink-3); padding: 0 1px 1px; border-bottom: 1px solid transparent; white-space: nowrap; }   /* three tabs and the expand toggle share one line at the narrowest split */
 .tab:hover { color: var(--ink); }
@@ -504,8 +522,12 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
   html, body { height: auto; }
   body { overflow: auto; }
   .page { height: auto; min-height: 100vh; }
-  .stage { padding-bottom: 28px; }
+  .stage { padding-bottom: 14px; }
 }
+html.no-fit, html.no-fit body { height: auto; }   /* js/site.js: the content is taller than the screen, so scroll */
+html.no-fit body { overflow: auto; }
+html.no-fit .page { height: auto; min-height: 100vh; }
+html.no-fit .stage { padding-bottom: 14px; }
 @media (max-width: 900px) {
   .work-body { grid-template-columns: minmax(0, 1fr); }
   .preview { display: none; }   /* no hover on a phone or tablet; the rows open the pages */
@@ -516,11 +538,11 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
   .coords { display: none; }   /* no cursor on phones */
 }
 
-/* ───────── touch: every control is a 44px tap target (same type size, more padding) ───────── */
-@media (pointer: coarse) {
+/* ───────── touch and phones: every control is a 44px tap target (same type size, more padding) ───────── */
+@media (pointer: coarse), (max-width: 599px) {
   .key, .top-links a, .brand, .tab, .split-toggle, .toolbox button, .sfm-objs button, .sfm-modes button, .golf-actions button, .credits-btn,
-  .back a, .proj-pn a, .proj-talk a { min-height: 44px; }   /* buttons centre their text by themselves */
-  .top-links a, .brand, .back a, .proj-pn a, .proj-talk a { display: inline-flex; align-items: center; }
+  .back a, .proj-pn a, .proj-talk a, .proj-meta a, .proj-pdf a, .card h2 a, .card > a, .demo-blurb a { min-height: 44px; }   /* buttons centre their text by themselves */
+  .top-links a, .brand, .back a, .proj-pn a, .proj-talk a, .proj-meta a, .proj-pdf a, .card h2 a, .card > a, .demo-blurb a { display: inline-flex; align-items: center; }
   .tab { padding: 0 6px; }
   .project-list .row { padding-block: 10px; }
   .help-btn, .theme-sw { position: relative; }

@@ -92,6 +92,11 @@ ${body}
 
 const meta = p => [p.role, p.year].map(esc).join(' · ');
 const pdfLink = (p, text) => `<a href="../${esc(p.pdf)}" target="_blank" rel="noopener">${text}</a>`;
+// "with A, B · advisors: X, Y": the people, then the advisors once (the data marks each one 'advisor: …')
+function withLine(w) {
+  const adv = w.filter(x => /^advisor: /.test(x)).map(x => x.replace(/^advisor: /, '')), people = w.filter(x => !/^advisor: /.test(x));
+  return [people.length ? 'with ' + people.join(', ') : '', adv.length ? (adv.length > 1 ? 'advisors: ' : 'advisor: ') + adv.join(', ') : ''].filter(Boolean).join(' · ');
+}
 const tags = p => `<ul class="proj-tags">${p.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`;
 const list = a => `<ul>${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
 // each figure opens the full image in a new tab; only the hero (above the fold) loads eagerly
@@ -101,15 +106,15 @@ const figure = (f, lazy) => `<figure><a href="../${esc(f.src)}" target="_blank" 
 function projectPage(p, projects, i) {
   const n = projects.length, prev = projects[(i + n - 1) % n], next = projects[(i + 1) % n];
   const [hero, ...rest] = p.figures;
-  const pdf = p.pdf ? ` · ${pdfLink(p, esc(p.pdfLabel) + ' (pdf) <span aria-hidden="true">↗</span>')}` : '';
+  const pdf = p.pdf ? ` · ${pdfLink(p, esc(p.pdfLabel) + ' (pdf)<span aria-hidden="true">&nbsp;↗</span>')}` : '';
   const body = `      <p class="back"><a href="index.html">← all projects</a></p>
       <article class="proj">
         <h1>${esc(p.title)}</h1>
         <p class="proj-meta">${meta(p)}${pdf}</p>${p.with && p.with.length ? `
-        <p class="proj-with">with ${esc(p.with.join(', '))}</p>` : ''}
-        ${tags(p)}${hero ? `
+        <p class="proj-with">${esc(withLine(p.with))}</p>` : ''}
+        ${tags(p)}
+        <p class="proj-mypart"><b>my part:</b> ${esc(p.myPart)}</p>${hero ? `
         <div class="proj-hero">${figure(hero, false)}</div>` : ''}
-        <p class="proj-mypart"><b>my part:</b> ${esc(p.myPart)}</p>
         <div class="proj-grid">
           <section><h2>problem</h2><p>${esc(p.overview.problem)}</p></section>
           <section><h2>what I built</h2>${list(p.overview.built)}</section>
@@ -118,7 +123,7 @@ function projectPage(p, projects, i) {
         <div class="proj-figs">${rest.map(f => `
           ${figure(f, true)}`).join('')}
         </div>` : ''}${p.pdf ? `
-        <p class="proj-pdf">${pdfLink(p, 'read the ' + esc(p.pdfLabel) + ' (pdf) <span aria-hidden="true">↗</span>')}</p>` : ''}
+        <p class="proj-pdf">${pdfLink(p, 'read the ' + esc(p.pdfLabel) + ' (pdf)<span aria-hidden="true">&nbsp;↗</span>')}</p>` : ''}
       </article>
       <nav class="proj-pn" aria-label="more projects"><a href="${esc(prev.slug)}.html" rel="prev">← ${esc(prev.title)}</a><span aria-hidden="true"> · </span><a href="${esc(next.slug)}.html" rel="next">next: ${esc(next.title)} →</a></nav>
       <p class="proj-talk">want to talk? <a href="mailto:${EMAIL}">email</a> · <a href="../${RESUME}" target="_blank" rel="noopener">resume</a></p>`;

@@ -33,7 +33,7 @@ SFM_REFINE_WAIT_MS = 2000         # auto-refine starts 0.7s after a change and r
 SFM_FILM_TIMEOUT_MS = 9000        # "film it" takes about 4s
 SFM_FILM_FRAMES = 24              # keep in step with FILM_FRAMES in js/sfm.js
 SFM_MAX_CAMS = 16                 # … and MAX_CAMS
-SFM_MATCH_LINES = 150             # … and MATCH_LINES
+SFM_MATCH_LINES = 36              # … and MATCH_LINES
 SFM_CONTEXT_TIMEOUT_MS = 12000    # a context message may wait out the previous one (4s) first
 SFM_HELP_MAX_WORDS = 70
 SFM_TEACH_FIRST = "drag the cameras. points seen twice become 3D."        # keep in step with CONTEXT in js/sfm.js
@@ -601,8 +601,8 @@ def project_checks(browser):
     pn = page.eval_on_selector_all(".proj-pn a", "els => els.map(a => [a.getAttribute('rel'), a.getAttribute('href')])")
     i, n = PROJECT_SLUGS.index(PROJECT_PDF_SLUG), len(PROJECT_SLUGS)
     check("project page: prev / next links in the project order", pn == [["prev", f"{PROJECT_SLUGS[(i - 1) % n]}.html"], ["next", f"{PROJECT_SLUGS[(i + 1) % n]}.html"]], str(pn))
-    figs = page.evaluate("[...document.querySelectorAll('.proj figure')].map(f => { const a = f.querySelector('a'), i = f.querySelector('img'); return !!a && a.target === '_blank' && a.getAttribute('href') === i.getAttribute('src') && i.getBoundingClientRect().height <= innerHeight * 0.7 + 1; })")
-    check("project page: every figure links to its image, no taller than 70vh", figs and all(figs), str(figs))
+    figs = page.evaluate("[...document.querySelectorAll('.proj figure')].map(f => { const a = f.querySelector('a'), i = f.querySelector('img'); return !!a && a.target === '_blank' && a.getAttribute('href') === i.getAttribute('src') && i.getBoundingClientRect().height <= innerHeight * 0.45 + 1; })")
+    check("project page: every figure links to its image, no taller than 45vh", figs and all(figs), str(figs))
     c = page.evaluate("(() => { const m = document.querySelector('main').getBoundingClientRect(); return Math.abs((m.left + m.right) / 2 - innerWidth / 2); })()")
     check("project page: the content column is centred", c <= 2, str(c))
     page.close()
@@ -687,6 +687,31 @@ def back_link_checks(browser):
         page.close()
     finally:
         srv.terminate(); srv.wait()
+
+
+SQUEEZED_VIEWPORTS = [(1024, 768), (1100, 700)]   # two columns, but less room than the one-screen layout needs
+LAST_ROW_JS = """() => {
+  const r = s => document.querySelector(s).getBoundingClientRect(), last = [...document.querySelectorAll('#project-list a.row')].pop();
+  last.scrollIntoView({ block: 'center' });
+  const lr = last.getBoundingClientRect(), hit = document.elementFromPoint(lr.left + lr.width / 2, lr.top + lr.height / 2), f = r('.foot');
+  const over = ['.masthead', '.intro', '.work', '.showcases'].filter(s => { const b = r(s); return b.bottom > f.top + 1 && b.top < f.bottom - 1; });
+  return { clickable: !!hit && last.contains(hit), over: over, header: Math.abs(r('.top-r').top - r('.mast-id').top) < 2 };
+}"""
+
+
+def squeezed_checks(browser):
+    """Between phone and full desktop: the header keeps one row, and a page that can't fit scrolls instead of pinning the footer over it."""
+    for size in SQUEEZED_VIEWPORTS:
+        page = open_page(browser, size)
+        for tab in ("dog-lab", "sfm", "golf"):
+            page.click(f"#tab-{tab}"); page.wait_for_timeout(SPLIT_ANIM_WAIT_MS)
+            o = page.evaluate(LAST_ROW_JS)
+            label = f"home {size[0]}x{size[1]} ({tab})"
+            check(label + ": the last project row is clickable, nothing overlaps the footer", o["clickable"] and not o["over"], str(o))
+            check(label + ": keys and links stay on the name's row", o["header"], str(o))
+            page.evaluate("scrollTo(0, 0)")
+        check(f"home {size[0]}x{size[1]}: no console errors", not page.errors, "; ".join(page.errors))
+        page.close()
 
 
 def click_tile(page, tile):
@@ -825,11 +850,12 @@ def split_checks(browser):
     t0 = page.inner_text("#split-toggle")
     page.click("#split-toggle"); page.wait_for_timeout(SPLIT_ANIM_WAIT_MS)
     t1, v1 = page.inner_text("#split-toggle"), split_val(page)
+    check("split: the hover preview hides while the showcase is expanded", not page.is_visible("#project-preview"))
     page.click("#split-toggle"); page.wait_for_timeout(SPLIT_ANIM_WAIT_MS)
     t2, v2 = page.inner_text("#split-toggle"), split_val(page)
     kb = page.evaluate("(() => { const b = document.getElementById('split-toggle'), cs = getComputedStyle(b), t = document.getElementById('showcase-tabs').getBoundingClientRect(), r = b.getBoundingClientRect(); return { border: cs.borderTopStyle !== 'none' && parseFloat(cs.borderTopWidth) >= 1, h: Math.round(r.height), sameRow: Math.abs((r.top + r.bottom) / 2 - (t.top + t.bottom) / 2) < 6 }; })()")
     check("split: expand is a key-style button on the tabs' row", kb["border"] and 20 <= kb["h"] <= 26 and kb["sameRow"], str(kb))
-    check("split: expand toggle goes expanded, then back", (t0.strip(), t1.strip(), t2.strip()) == ("\u2922 expand", "\u2924 shrink", "\u2922 expand")
+    check("split: expand toggle goes expanded, then back", (t0.strip(), t1.strip(), t2.strip()) == ("expand", "shrink", "expand") and page.locator("#split-toggle svg.key-icon").count() == 1
           and (v1, v2) == (SPLIT_EXPANDED, SPLIT_DEFAULT), repr((t0, t1, t2, v1, v2)))
 
     # persistence
@@ -946,11 +972,14 @@ def demos_checks(browser):
         page = open_page(browser, size, path="demos.html")
         navs = page.eval_on_selector_all(".keys a", "els => els.map(a => [a.textContent, a.getAttribute('aria-current')])")
         check(f"demos ({label}): nav marks demos current", navs == [["home", None], ["projects", None], ["demos", "page"]], str(navs))
-        seen = []
+        seen, scrolls = [], []
         for i in ids:
             page.click(f"#tab-{i}")
             page.wait_for_timeout(300)
             seen.append([page.is_visible(f"#{j}") for j in ids])
+            scrolls.append(page.evaluate("document.documentElement.scrollHeight - innerHeight"))
+        if size == DESKTOP_VIEWPORT:
+            check(f"demos ({label}): every demo fits one screen at {size[0]}x{size[1]}", max(scrolls) <= 0, str(scrolls))
         check(f"demos ({label}): the three tabs switch panels", seen == [[k == n for k in range(3)] for n in range(3)], str(seen))
         check(f"demos ({label}): a one-line description for each demo", page.locator(".demo-blurb").count() == 3)
         rel = page.eval_on_selector_all(".demo-blurb a", "els => els.map(a => [a.closest('li').querySelector('b').textContent, a.getAttribute('href')])")
@@ -1071,6 +1100,7 @@ def main():
         page.close()
 
         header_checks(browser)
+        squeezed_checks(browser)
         project_checks(browser)
         back_link_checks(browser)
         demos_checks(browser)

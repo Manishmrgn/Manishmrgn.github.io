@@ -20,7 +20,7 @@
       overview: {
         problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram); I worked on it with a three-person capstone team.',
         built: [
-          'marker detection with YOLOv8 and cv2.aruco, feeding RASTER\'s absolute-scale step',
+          'the detected markers feed RASTER\'s absolute-scale step',
           'the end-to-end reconstruction: structure from motion in Meshroom alongside a CUDA-optimized NeRF (Nerfstudio), scaled by the ArUco markers',
           'synthetic training data from Unreal Engine 5, annotated automatically, with randomized markers, poses, lighting, blur and lens distortion',
           '3D background subtraction (parallelized KD-Tree/FLANN and Octree) to pull an object out of a scene',

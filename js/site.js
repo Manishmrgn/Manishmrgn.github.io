@@ -4,7 +4,25 @@
 
   // ═══════════════════════════ CONTENT — edit here ═══════════════════════════
   // resume, github, linkedin and email live in the page header (topRight() in tools/build.js; index.html and demos.html carry a copy)
-  var TIME_ZONE = 'America/Los_Angeles';               // footer clock
+  var TIME_ZONE = 'America/Los_Angeles';               // one screen when it fits; when it doesn't (e.g. 1024x768), html.no-fit lets the page scroll like a document
+  // instead of pinning the footer over the last rows. Measured in the pinned layout, after every size change.
+  var stage = document.querySelector('.stage'), cols = document.querySelector('.showcases'), foot = document.querySelector('.foot');
+  function fit() {
+    var d = document.documentElement;
+    d.classList.remove('no-fit');
+    var f = foot.getBoundingClientRect().top + 1;
+    var over = cols.getBoundingClientRect().bottom > f || (list && list.scrollHeight > list.clientHeight + 1);
+    d.classList.toggle('no-fit', over);
+  }
+  if (stage && cols && foot && window.ResizeObserver) {
+    var fitRaf = 0, ro = new ResizeObserver(function () {   // a frame later: never inside the observer's own layout pass
+      if (!fitRaf) fitRaf = requestAnimationFrame(function () { fitRaf = 0; fit(); });
+    });
+    [stage, cols, document.documentElement].forEach(function (el) { ro.observe(el); });
+    fit();
+  }
+
+  // footer clock
 
   // showcase tabs: id = the tabpanel <section id> in index.html. See README, "Adding a showcase".
   var SHOWCASES = [
