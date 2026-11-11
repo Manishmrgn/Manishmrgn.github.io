@@ -5,11 +5,11 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
-const root = path.join(__dirname, '..');
+const root = process.env.BUILD_ROOT || path.join(__dirname, '..'); // BUILD_ROOT lets tests build into a temp copy
 const PROJECTS = require(path.join(root, 'js', 'projects.js'));
 const SITE = 'https://manishmrgn.github.io/';
 
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
 const THEME_SW = '<button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button>';
 

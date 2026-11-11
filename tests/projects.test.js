@@ -48,6 +48,7 @@ test('there are 7 projects, newest year first', () => {
 
 // ── generator ──
 const { spawnSync } = require('child_process');
+const os = require('os');
 const { render } = require(path.join(root, 'tools', 'build.js'));
 const SITE = 'https://manishmrgn.github.io/';
 const pages = render();
@@ -68,19 +69,30 @@ test('each project page has its own <title>, meta description, canonical and og:
   });
 });
 
-test('html special characters are escaped', () => {
-  const fake = Object.assign({}, PROJECTS[0], { slug: 'fake', title: 'A & <B> "C"', figures: [], pdf: undefined, pdfLabel: undefined });
-  const h = render([fake])['projects/fake.html'];
-  const want = 'A &amp; &lt;B&gt; &quot;C&quot;';
-  assert.ok(new RegExp('<title>[^<]*' + want).test(h), 'title');
-  assert.ok(h.includes('property="og:title" content="' + want), 'og:title');
-  assert.ok(!h.includes('<B>'));
+test('html special characters are escaped everywhere', () => {
+  const X = `A & <B> "C" 'D'`, E = 'A &amp; &lt;B&gt; &quot;C&quot; &#39;D&#39;';
+  const fake = Object.assign({}, PROJECTS[0], {
+    slug: 'fake', title: X, oneLiner: X, where: X, tags: [X], with: [X],
+    overview: { problem: X, built: [X], results: [X] },
+    figures: [{ src: 'assets/projects/raster/pipeline.jpg', alt: X, caption: X }], pdf: undefined, pdfLabel: undefined
+  });
+  const out = render([fake]);
+  Object.keys(out).filter(k => k.endsWith('.html')).forEach(k => {
+    const h = out[k];
+    assert.ok(!h.includes('<B>') && !h.includes('"C"') && !h.includes("'D'"), k + ' has raw chars');
+    assert.ok(h.includes(E), k + ' has escaped form');
+  });
+  const h = out['projects/fake.html'];
+  assert.ok(new RegExp('<title>[^<]*' + E).test(h), 'title');
+  assert.ok(h.includes('property="og:title" content="' + E), 'og:title');
+  assert.ok(h.includes('alt="' + E + '"'), 'alt');
+  assert.ok((h.match(new RegExp(E, 'g')) || []).length >= 10, 'all fields escaped');
 });
 
-test('pages without a pdf have no <object> and no download link', () => {
+test('pages without a pdf have no pdf block and no <object>', () => {
   PROJECTS.filter(p => !p.pdf).forEach(p => {
     const h = pages['projects/' + p.slug + '.html'];
-    assert.ok(!h.includes('<object') && !h.includes('download'), p.slug);
+    assert.ok(!h.includes('class="proj-pdf"') && !h.includes('<object'), p.slug);
   });
 });
 
@@ -112,6 +124,38 @@ test('sitemap lists /, /projects/, /demos.html and every project page', () => {
   const s = pages['sitemap.xml'];
   [SITE, SITE + 'projects/', SITE + 'demos.html'].concat(PROJECTS.map(p => SITE + 'projects/' + p.slug + '.html'))
     .forEach(u => assert.ok(s.includes('<loc>' + u + '</loc>'), u));
+});
+
+function tempSite() {
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'portfolio-'));
+  fs.mkdirSync(path.join(d, 'js'));
+  fs.copyFileSync(path.join(root, 'js', 'projects.js'), path.join(d, 'js', 'projects.js'));
+  fs.cpSync(path.join(root, 'assets', 'projects'), path.join(d, 'assets', 'projects'), { recursive: true });
+  fs.cpSync(path.join(root, 'assets', 'papers'), path.join(d, 'assets', 'papers'), { recursive: true });
+  return d;
+}
+const build = (d, ...args) => spawnSync('node', [path.join(root, 'tools', 'build.js'), ...args], { encoding: 'utf8', env: Object.assign({}, process.env, { BUILD_ROOT: d }) });
+
+test('build --check exits 1 and names a stale page', () => {
+  const d = tempSite();
+  assert.strictEqual(build(d).status, 0);
+  assert.strictEqual(build(d, '--check').status, 0);
+  fs.appendFileSync(path.join(d, 'projects', 'raster.html'), '<!-- edited -->');
+  const r = build(d, '--check');
+  assert.strictEqual(r.status, 1);
+  assert.ok(r.stderr.includes('projects/raster.html'), r.stderr);
+  fs.rmSync(d, { recursive: true });
+});
+
+test('build fails naming a missing pdf and writes nothing', () => {
+  const d = tempSite();
+  const f = path.join(d, 'js', 'projects.js');
+  fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('assets/papers/raster-poster.pdf', 'assets/papers/nope.pdf'));
+  const r = build(d);
+  assert.strictEqual(r.status, 1);
+  assert.ok(r.stderr.includes('assets/papers/nope.pdf'), r.stderr);
+  assert.ok(!fs.existsSync(path.join(d, 'projects')) && !fs.existsSync(path.join(d, 'sitemap.xml')));
+  fs.rmSync(d, { recursive: true });
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
