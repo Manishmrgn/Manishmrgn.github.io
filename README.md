@@ -25,7 +25,7 @@ then open http://localhost:8000.
 | What | Where |
 | --- | --- |
 | Name, tagline, intro paragraphs | `index.html` (look for the `INTRO` comment) |
-| Projects (title, description, tags, link, optional image) | `PROJECTS` at the top of `js/site.js` |
+| Projects (title, one-liner, tags, overview, figures, pdf) | `PROJECTS` in `js/projects.js`; then run `node tools/build.js` to regenerate `projects/*.html` and `sitemap.xml` |
 | GitHub / LinkedIn links | `LINKS` at the top of `js/site.js` |
 | Email | `EMAIL` at the top of `js/site.js` — it ships as the placeholder `you@example.com` |
 | Footer clock time zone | `TIME_ZONE` at the top of `js/site.js` |
