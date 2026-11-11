@@ -26,8 +26,7 @@ then open http://localhost:8000.
 | --- | --- |
 | Name, tagline, intro paragraphs | `index.html` (look for the `INTRO` comment) |
 | Projects (title, one-liner, tags, overview, figures, pdf) | `PROJECTS` in `js/projects.js`; then run `node tools/build.js` to regenerate `projects/*.html` and `sitemap.xml` |
-| GitHub / LinkedIn links | `LINKS` at the top of `js/site.js` |
-| Email | `EMAIL` at the top of `js/site.js` — it ships as the placeholder `you@example.com` |
+| Header: nav keys, resume, GitHub, LinkedIn, email | `topRight()` and `RESUME` / `EMAIL` in `tools/build.js`; `index.html` and `demos.html` carry a copy (`node tests/projects.test.js` fails if they drift) |
 | Footer clock time zone | `TIME_ZONE` at the top of `js/site.js` |
 | Colours (light and dark) | the `:root` tokens at the top of `css/style.css` |
 | The left/right split: default, range, expand target, storage key | the config block at the top of `js/split.js` (desktop only; `--l`/`--r` in `css/style.css`) |

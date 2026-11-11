@@ -1,13 +1,9 @@
-/* site.js — showcase tabs, projects, hover previews, footer clock, cursor coordinates. */
+/* site.js — showcase tabs, projects, hover previews, footer clock, cursor coordinates. Every page loads it; each part skips itself when its elements are missing. */
 (function () {
   'use strict';
 
   // ═══════════════════════════ CONTENT — edit here ═══════════════════════════
-  var EMAIL = 'you@example.com';                       // placeholder: put your real address here
-  var LINKS = {
-    github: 'https://github.com/Manishmrgn',
-    linkedin: 'https://www.linkedin.com/in/Manishmrgn'
-  };
+  // resume, github, linkedin and email live in the page header (topRight() in tools/build.js; index.html and demos.html carry a copy)
   var TIME_ZONE = 'America/Los_Angeles';               // footer clock
 
   // showcase tabs: id = the tabpanel <section id> in index.html. See README, "Adding a showcase".
@@ -20,14 +16,6 @@
   // ═══════════════════════════════════════════════════════════════════════════
 
   var $ = function (id) { return document.getElementById(id); };
-
-  // links
-  if ($('link-github')) {   // home only; demos.html has the plain footer
-    $('link-github').href = LINKS.github;
-    $('link-linkedin').href = LINKS.linkedin;
-    $('link-email').href = 'mailto:' + EMAIL;
-    if (EMAIL === 'you@example.com') $('email-wrap').hidden = true;   // don't ship a dead placeholder link
-  }
 
   // showcase tabs: one panel visible; the others get 'showcase:hide' so they stop running
   var tabBar = $('showcase-tabs'), current = null;

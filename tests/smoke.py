@@ -550,8 +550,8 @@ def golf_checks(browser):
 def project_checks(browser):
     root = SITE_INDEX.parent
     page = open_page(browser, DESKTOP_VIEWPORT)
-    navs = page.eval_on_selector_all(".nav a", "els => els.map(a => [a.textContent, a.getAttribute('href'), a.getAttribute('aria-current')])")
-    check("home: nav shows home · projects · demos, home marked current",
+    navs = page.eval_on_selector_all(".keys a", "els => els.map(a => [a.textContent, a.getAttribute('href'), a.getAttribute('aria-current')])")
+    check("home: nav keys home · projects · demos, home marked current",
           navs == [["home", "index.html", "page"], ["projects", "projects/index.html", None], ["demos", "demos.html", None]], str(navs))
     hrefs = page.eval_on_selector_all("#project-list a.row", "els => els.map(a => a.getAttribute('href'))")
     check("home: 7 project rows, each links to projects/<slug>.html", hrefs == [f"projects/{s}.html" for s in PROJECT_SLUGS], str(hrefs))
@@ -589,6 +589,42 @@ def project_checks(browser):
     check("project page: a saved dark theme applies", page.get_attribute("html", "data-theme") == "dark")
     page.evaluate("localStorage.removeItem('portfolio-theme')")
     page.close()
+
+
+HEADER_JS = """() => {
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; };
+  const keys = [...document.querySelectorAll('header .keys a.key')], links = [...document.querySelectorAll('header .top-links a')];
+  const line = document.querySelector('.foot-line');
+  return { keys: keys.map(a => [a.textContent, a.getAttribute('aria-current')]),
+           keyH: keys.map(a => Math.round(a.getBoundingClientRect().height)),
+           links: links.map(a => a.textContent.replace(/\\s+/g, ' ').trim()),
+           linkH: links.map(a => Math.round(a.getBoundingClientRect().height)),
+           visible: keys.concat(links).every(vis),
+           email: (document.getElementById('link-email') || {}).href,
+           resume: document.getElementById('link-resume') && [document.getElementById('link-resume').target, new URL(document.getElementById('link-resume').href).pathname.split('/').pop()],
+           footText: line.textContent.replace(/\\s+/g, ' ').trim() };
+}"""
+HEADER_PAGES = [("home", None, "home"), ("projects index", "projects/index.html", "projects"), ("project page", "projects/raster.html", "projects"), ("demos", "demos.html", "demos")]
+
+
+def header_checks(browser):
+    """Every page: nav keys (current one marked), the resume / github / linkedin / email links above the fold, a clean footer."""
+    for name, path, cur in HEADER_PAGES:
+        for size in (DESKTOP_VIEWPORT, MOBILE_VIEWPORT):
+            page = open_page(browser, size, path=path)
+            o = page.evaluate(HEADER_JS)
+            label = f"header ({name}, {size[0]}x{size[1]})"
+            check(label + ": keys home / projects / demos, current marked", o["keys"] == [[k, "page" if k == cur else None] for k in ("home", "projects", "demos")], str(o["keys"]))
+            check(label + ": resume ↓ · github · linkedin · email, all visible above the fold", o["links"] == ["resume ↓", "github", "linkedin", "muruganmanishwaran@gmail.com"] and o["visible"], str(o))
+            check(label + ": email is a mailto link; resume opens the pdf in a new tab", o["email"] == "mailto:muruganmanishwaran@gmail.com" and o["resume"] == ["_blank", "Manishwaran-Murugan-Resume.pdf"], str(o))
+            if size == MOBILE_VIEWPORT:
+                check(label + ": every key and link is a 44px+ tap target", min(o["keyH"] + o["linkH"]) >= 44, str(o["keyH"] + o["linkH"]))
+            else:
+                check(label + ": keys are ~32px tall", all(30 <= h <= 34 for h in o["keyH"]), str(o["keyH"]))
+            check(label + ": footer has the clock, no v0.1, no links, no dangling ·", "santa clara" in o["footText"] and "v0.1" not in o["footText"]
+                  and "github" not in o["footText"] and not o["footText"].endswith("·"), repr(o["footText"]))
+            check(label + ": no console errors", not page.errors, "; ".join(page.errors))
+            page.close()
 
 
 def click_tile(page, tile):
@@ -844,7 +880,7 @@ def demos_checks(browser):
     ids = ["dog-lab", "sfm", "golf"]
     for size, label in ((DESKTOP_VIEWPORT, "desktop"), (MOBILE_VIEWPORT, "390px")):
         page = open_page(browser, size, path="demos.html")
-        navs = page.eval_on_selector_all(".nav a", "els => els.map(a => [a.textContent, a.getAttribute('aria-current')])")
+        navs = page.eval_on_selector_all(".keys a", "els => els.map(a => [a.textContent, a.getAttribute('aria-current')])")
         check(f"demos ({label}): nav marks demos current", navs == [["home", None], ["projects", None], ["demos", "page"]], str(navs))
         seen = []
         for i in ids:
@@ -968,6 +1004,7 @@ def main():
         check(f"no horizontal overflow at {MOBILE_VIEWPORT[0]}x{MOBILE_VIEWPORT[1]}", o["h"] <= 0, str(o))
         page.close()
 
+        header_checks(browser)
         project_checks(browser)
         demos_checks(browser)
         sfm_checks(browser)

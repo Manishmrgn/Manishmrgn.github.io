@@ -115,6 +115,12 @@ test('every relative href/src in a generated page resolves to a file', () => {
   });
 });
 
+test('index.html and demos.html carry the same header links as the generated pages', () => {
+  const { topRight } = require(path.join(root, 'tools', 'build.js'));
+  [['index.html', 'home'], ['demos.html', 'demos']].forEach(([f, cur]) =>
+    assert.ok(fs.readFileSync(path.join(root, f), 'utf8').includes(topRight('', cur)), f + ' header differs from topRight() in tools/build.js'));
+});
+
 test('build --check passes', () => {
   const r = spawnSync('node', [path.join(root, 'tools', 'build.js'), '--check'], { encoding: 'utf8' });
   assert.strictEqual(r.status, 0, r.stdout + r.stderr);

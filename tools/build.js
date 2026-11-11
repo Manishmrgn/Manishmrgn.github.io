@@ -13,11 +13,36 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 
 const THEME_SW = '<button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button>';
 
+const RESUME = 'assets/Manishwaran-Murugan-Resume.pdf';
+const EMAIL = 'muruganmanishwaran@gmail.com';
+const GIZMO = `<svg class="gizmo" viewBox="0 0 40 32" width="40" height="32" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="1">
+          <line x1="18" y1="18" x2="32" y2="25"/>
+          <line x1="18" y1="18" x2="4" y2="25"/>
+          <line x1="18" y1="18" x2="18" y2="3"/>
+        </g>
+        <g font-size="7" fill="currentColor">
+          <text x="34" y="30">x</text>
+          <text x="0" y="30">y</text>
+          <text x="21" y="7">z</text>
+        </g>
+      </svg>`;
+
+// the right half of every page's header: nav keys, then resume / github / linkedin / email.
+// index.html and demos.html carry a copy (b = ''); tests/projects.test.js checks they match.
+function topRight(b, cur) {
+  const keys = [['home', 'index.html'], ['projects', 'projects/index.html'], ['demos', 'demos.html']]
+    .map(([n, h]) => `<a class="key" href="${b}${h}"${n === cur ? ' aria-current="page"' : ''}>${n}</a>`).join('');
+  const sep = '<span class="sep" aria-hidden="true"> · </span>';
+  return `<div class="top-r">
+        <nav class="keys" aria-label="site">${keys}</nav>
+        <p class="top-links"><a id="link-resume" class="resume" href="${b}${RESUME}" target="_blank" rel="noopener">resume<span aria-hidden="true">&nbsp;↓</span></a>${sep}<a id="link-github" href="https://github.com/Manishmrgn">github</a>${sep}<a id="link-linkedin" href="https://www.linkedin.com/in/Manishmrgn">linkedin</a>${sep}<a id="link-email" href="mailto:${EMAIL}">${EMAIL}</a></p>
+      </div>`;
+}
+
 // b = path prefix back to the site root ('../' for projects/, '' for root pages); cur = 'projects' | 'demos'
 function layout({ title, desc, url, image, body, b = '../', cur }) {
   const t = esc(title), d = esc(desc);
-  const nav = [['home', 'index.html'], ['projects', 'projects/index.html'], ['demos', 'demos.html']]
-    .map(([n, h]) => `<a href="${b}${h}"${n === cur ? ' aria-current="page"' : ''}>${n}</a>`).join(' · ');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,20 +69,20 @@ function layout({ title, desc, url, image, body, b = '../', cur }) {
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Silkscreen&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="${b}css/style.css">
   <script defer src="${b}js/theme.js"></script>
+  <script defer src="${b}js/site.js"></script>
 </head>
 <body class="sub">
   <div class="page">
-    <nav class="nav" aria-label="site">${nav}</nav>
+    <header class="masthead slim">
+      <a class="brand" href="${b}index.html">Manishwaran Murugan</a>
+      ${topRight(b, cur)}
+    </header>
     <main>
 ${body}
     </main>
     <footer class="foot">
-      <p class="foot-line">
-        <a href="https://github.com/Manishmrgn">github</a> ·
-        <a href="https://www.linkedin.com/in/Manishmrgn">linkedin</a> ·
-        <a href="${b}assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume</a> ·
-        ${THEME_SW}
-      </p>
+      ${GIZMO}
+      <p class="foot-line">santa clara · <time id="clock">--:--</time> ${THEME_SW}</p>
     </footer>
   </div>
 </body>
@@ -142,4 +167,4 @@ function main() {
 }
 
 if (require.main === module) main();
-else module.exports = { render, layout };
+else module.exports = { render, layout, topRight };

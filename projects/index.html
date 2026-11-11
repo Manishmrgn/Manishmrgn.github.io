@@ -24,10 +24,17 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Silkscreen&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
   <script defer src="../js/theme.js"></script>
+  <script defer src="../js/site.js"></script>
 </head>
 <body class="sub">
   <div class="page">
-    <nav class="nav" aria-label="site"><a href="../index.html">home</a> · <a href="../projects/index.html" aria-current="page">projects</a> · <a href="../demos.html">demos</a></nav>
+    <header class="masthead slim">
+      <a class="brand" href="../index.html">Manishwaran Murugan</a>
+      <div class="top-r">
+        <nav class="keys" aria-label="site"><a class="key" href="../index.html">home</a><a class="key" href="../projects/index.html" aria-current="page">projects</a><a class="key" href="../demos.html">demos</a></nav>
+        <p class="top-links"><a id="link-resume" class="resume" href="../assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume<span aria-hidden="true">&nbsp;↓</span></a><span class="sep" aria-hidden="true"> · </span><a id="link-github" href="https://github.com/Manishmrgn">github</a><span class="sep" aria-hidden="true"> · </span><a id="link-linkedin" href="https://www.linkedin.com/in/Manishmrgn">linkedin</a><span class="sep" aria-hidden="true"> · </span><a id="link-email" href="mailto:muruganmanishwaran@gmail.com">muruganmanishwaran@gmail.com</a></p>
+      </div>
+    </header>
     <main>
       <h1>projects</h1>
       <ul class="cards">
@@ -76,12 +83,19 @@
       </ul>
     </main>
     <footer class="foot">
-      <p class="foot-line">
-        <a href="https://github.com/Manishmrgn">github</a> ·
-        <a href="https://www.linkedin.com/in/Manishmrgn">linkedin</a> ·
-        <a href="../assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume</a> ·
-        <button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button>
-      </p>
+      <svg class="gizmo" viewBox="0 0 40 32" width="40" height="32" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="1">
+          <line x1="18" y1="18" x2="32" y2="25"/>
+          <line x1="18" y1="18" x2="4" y2="25"/>
+          <line x1="18" y1="18" x2="18" y2="3"/>
+        </g>
+        <g font-size="7" fill="currentColor">
+          <text x="34" y="30">x</text>
+          <text x="0" y="30">y</text>
+          <text x="21" y="7">z</text>
+        </g>
+      </svg>
+      <p class="foot-line">santa clara · <time id="clock">--:--</time> <button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button></p>
     </footer>
   </div>
 </body>
