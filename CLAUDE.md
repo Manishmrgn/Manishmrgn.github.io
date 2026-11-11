@@ -35,9 +35,19 @@ Source assets live in ../portfolio-voxel-design; screenshots in ../portfolio-vox
   "reset hole" hides then, since two buttons just fit the 212px side column.
 - Smoke test runs with `uv run --with playwright python tests/smoke.py` (uses installed Chrome; no Chromium download).
 
-- Resume at assets/resume.pdf (footer link). Projects now link papers in assets/papers/: raster-poster.pdf (IISc RASTER
+- Resume at assets/resume.pdf (footer link). Papers live in assets/papers/ and show on each project page (projects/<slug>.html): raster-poster.pdf (IISc RASTER
   poster, as-is) and uv-debris-paper.pdf (VIT UAV debris paper — a copy with all four authors' emails redacted; the
   original is in ~/Documents/Resume/Context/IISC; not found on IEEE Xplore as of 2026-11-10, so this is its first public copy).
+
+## Project pages (2026-11-10)
+
+- Home lists all projects from `js/projects.js`; each row opens `projects/<slug>.html`.
+- `node tools/build.js` writes `projects/<slug>.html`, `projects/index.html` and `sitemap.xml` from `js/projects.js`;
+  `node tools/build.js --check` fails if they are stale. Generated files are committed. `demos.html` is hand-written.
+- Add a project: add an entry to `js/projects.js` (slug, title, oneLiner, tags, where, year, overview, figures, optional
+  `pdf` + `pdfLabel`, optional `media`), put figures in `assets/projects/<slug>/`, run `node tools/build.js`, run the tests.
+- Add a showcase: add it to both `index.html` and `demos.html` (see README).
+- Tests: `node tests/{brain,sfm,golf,projects}.test.js` and `uv run --with playwright python tests/smoke.py`.
 
 ## Still open
 
