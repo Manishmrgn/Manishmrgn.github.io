@@ -41,6 +41,7 @@
   <script defer src="assets/models/golf-props.js"></script>
   <script defer src="js/golf-core.js"></script>
   <script defer src="js/golf.js"></script>
+  <script defer src="js/projects.js"></script>
   <script defer src="js/site.js"></script>
 </head>
 <body>
@@ -58,6 +59,7 @@
       </div>
     </header>
 
+    <nav class="nav" aria-label="site"><a href="index.html" aria-current="page">home</a> · <a href="projects/index.html">projects</a> · <a href="demos.html">demos</a></nav>
     <main class="stage">
 
       <!-- ═════════ INTRO — edit the text here ═════════ -->
@@ -67,7 +69,7 @@
         <p>I like reconstruction, NeRFs, fast CUDA, and my dog — who is currently learning to find a bone <span class="point" aria-hidden="true">→</span></p>
       </section>
 
-      <!-- ═════════ PROJECTS — the list is filled from PROJECTS in js/site.js ═════════ -->
+      <!-- ═════════ PROJECTS — the list is filled from window.PROJECTS (js/projects.js) ═════════ -->
       <section class="work" aria-labelledby="work-label">
         <h2 id="work-label">things i've built</h2>
         <div class="work-body">

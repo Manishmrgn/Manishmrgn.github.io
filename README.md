@@ -39,9 +39,6 @@ then open http://localhost:8000.
 | golf: context lines, props, hop height | the `CONFIG` block at the top of `js/golf.js` |
 | golf: hop timing (√ of hop length, whole swing ≤ 3s) | `HOP_MS`, `SWING_MS` in `CONFIG` in `js/golf-core.js` |
 
-To show a gif or image for a project, put the file in the `assets/` folder and set that project's
-`media` to its path, e.g. `media: 'assets/nerf.gif'`.
-
 ## How the dog learns
 
 The world is a 6×6 grid. The dog starts at (0,1); the bone is at (5,1); a river of gaps at x=3

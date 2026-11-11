@@ -57,6 +57,9 @@ GOLF_WIDE_MIN = 500               # WIDE_MIN in js/golf.js: from this panel widt
 GOLF_CART_URL = "https://sketchfab.com/3d-models/golf-cart-db115793a8274dc18b2b277bf6c97703"
 # ═══════════════════════════════════════════════════════════════════════════
 
+PROJECT_SLUGS = ["sft-data", "agent-harness", "price-forecasting", "ai-town", "raster", "nerf", "debris"]   # keep in step with js/projects.js
+PROJECT_PDF_SLUG = "raster"       # has a pdf; the others (e.g. ai-town) have none
+
 FAILS = []
 
 
@@ -542,6 +545,50 @@ def golf_checks(browser):
     page.close()
 
 
+def project_checks(browser):
+    root = SITE_INDEX.parent
+    page = open_page(browser, DESKTOP_VIEWPORT)
+    navs = page.eval_on_selector_all(".nav a", "els => els.map(a => [a.textContent, a.getAttribute('href'), a.getAttribute('aria-current')])")
+    check("home: nav shows home · projects · demos, home marked current",
+          navs == [["home", "index.html", "page"], ["projects", "projects/index.html", None], ["demos", "demos.html", None]], str(navs))
+    hrefs = page.eval_on_selector_all("#project-list a.row", "els => els.map(a => a.getAttribute('href'))")
+    check("home: 7 project rows, each links to projects/<slug>.html", hrefs == [f"projects/{s}.html" for s in PROJECT_SLUGS], str(hrefs))
+    page.close()
+
+    page = open_page(browser, DESKTOP_VIEWPORT, path="projects/index.html")
+    hrefs = page.eval_on_selector_all(".cards .card h2 a", "els => els.map(a => a.getAttribute('href'))")
+    check("projects: index lists 7 cards, each links to its page",
+          sorted(hrefs) == sorted(f"{s}.html" for s in PROJECT_SLUGS) and all((root / "projects" / h).exists() for h in hrefs), str(hrefs))
+    page.close()
+
+    bad = []
+    for slug in PROJECT_SLUGS:
+        page = open_page(browser, DESKTOP_VIEWPORT, path=f"projects/{slug}.html")
+        if page.errors:
+            bad.append(f"{slug}: {page.errors}")
+        for h in page.eval_on_selector_all("main a[href], object[data]", "els => els.map(e => e.getAttribute('href') || e.getAttribute('data'))"):
+            if not h.startswith("http") and not (root / "projects" / h.split("#")[0]).resolve().exists():
+                bad.append(f"{slug}: {h}")
+        page.close()
+    check("project pages: load with no console errors; every link and pdf returns 200", not bad, "; ".join(bad))
+
+    for slug in (PROJECT_PDF_SLUG, "ai-town"):
+        page = open_page(browser, MOBILE_VIEWPORT, path=f"projects/{slug}.html")
+        o = page.evaluate("document.documentElement.scrollWidth - innerWidth")
+        embed = page.locator(".proj-pdf object")
+        link_ok = page.locator(".proj-pdf > p a").first.is_visible() if embed.count() else True
+        check(f"project page {slug} at 390px: no horizontal overflow; the pdf is a link, the embed is hidden",
+              o <= 0 and (not embed.count() or (embed.first.is_hidden() and link_ok)), f"overflow {o}px")
+        page.close()
+
+    page = open_page(browser, DESKTOP_VIEWPORT, path="projects/ai-town.html")
+    page.evaluate("localStorage.setItem('portfolio-theme', 'dark')")
+    page.reload()
+    check("project page: a saved dark theme applies", page.get_attribute("html", "data-theme") == "dark")
+    page.evaluate("localStorage.removeItem('portfolio-theme')")
+    page.close()
+
+
 def click_tile(page, tile):
     pos = page.evaluate(TILE_JS, list(tile))
     page.mouse.click(pos["x"], pos["y"])
@@ -585,7 +632,7 @@ def find_dog_tile(page):
     return None
 
 
-def open_page(browser, size, block=None):
+def open_page(browser, size, block=None, path=None):
     page = browser.new_page(viewport={"width": size[0], "height": size[1]})
     page.set_default_timeout(PAGE_TIMEOUT_MS)
     page.errors = []
@@ -596,7 +643,7 @@ def open_page(browser, size, block=None):
     page.route("**/fonts.gstatic.com/**", lambda r: r.fulfill(status=200, body=""))
     if block:
         page.route(block, lambda r: r.abort())
-    page.goto(SITE_INDEX.as_uri())
+    page.goto((SITE_INDEX.parent / path).as_uri() if path else SITE_INDEX.as_uri())
     page.wait_for_timeout(SETTLE_MS)
     return page
 
@@ -891,6 +938,7 @@ def main():
         check(f"no horizontal overflow at {MOBILE_VIEWPORT[0]}x{MOBILE_VIEWPORT[1]}", o["h"] <= 0, str(o))
         page.close()
 
+        project_checks(browser)
         sfm_checks(browser)
         split_checks(browser)
         golf_checks(browser)

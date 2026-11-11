@@ -17,17 +17,6 @@
     { id: 'golf', label: 'gradient golf' }
   ];
 
-  // media: optional path to a gif/image/mp4 poster in assets/, e.g. 'assets/nerf.gif'
-  var PROJECTS = [
-    { title: 'NeRF, faster', desc: 'CUDA kernels to speed up neural radiance field training.',
-      tags: ['cuda', 'nerf'], href: '#', media: '' },
-    { title: 'True-scale 3D from drones', desc: 'Structure from motion that recovers real-world scale with YOLOv8 + ArUco markers. IISc poster.',
-      tags: ['sfm', 'yolov8'], href: 'assets/papers/raster-poster.pdf', media: '' },
-    { title: 'Synthetic SFT data', desc: 'Generating fine-tuning data for a domain-specific LLM assistant.',
-      tags: ['llm', 'data'], href: '#', media: '' },
-    { title: 'Beach trash from the air', desc: 'Spotting coastal debris in drone images with YOLOv8 + Wise-IoU. Our VIT paper.',
-      tags: ['yolov8', 'uav'], href: 'assets/papers/uav-debris-paper.pdf', media: '' }
-  ];
   // ═══════════════════════════════════════════════════════════════════════════
 
   var $ = function (id) { return document.getElementById(id); };
@@ -85,20 +74,15 @@
 
   // projects + preview
   var list = $('project-list'), preview = $('project-preview');
+  var PROJECTS = window.PROJECTS || [];   // js/projects.js
   var links = PROJECTS.map(function (p, i) {
-    var isLink = p.href && p.href !== '#';
-    var li = document.createElement('li'), a = document.createElement(isLink ? 'a' : 'div');
+    var li = document.createElement('li'), a = document.createElement('a'), arrow = document.createElement('span');
     a.className = 'row';
     a.textContent = p.title;
-    if (isLink) {
-      var arrow = document.createElement('span');
-      a.href = p.href;
-      arrow.textContent = '↗';
-      arrow.setAttribute('aria-hidden', 'true');
-      a.appendChild(arrow);
-    } else {
-      a.tabIndex = 0;   // still reachable, so keyboard users get the preview too
-    }
+    a.href = 'projects/' + p.slug + '.html';
+    arrow.textContent = '↗';
+    arrow.setAttribute('aria-hidden', 'true');
+    a.appendChild(arrow);
     a.addEventListener('mouseenter', function () { show(i); });
     a.addEventListener('focus', function () { show(i); });
     li.appendChild(a);
@@ -110,11 +94,8 @@
     var p = PROJECTS[i];
     links.forEach(function (a, k) { a.classList.toggle('is-active', k === i); });
     preview.querySelector('.preview-title').textContent = p.title;
-    preview.querySelector('.preview-desc').textContent = p.desc;
+    preview.querySelector('.preview-desc').textContent = p.oneLiner;
     preview.querySelector('.preview-tags').textContent = p.tags.join(' · ');
-    var media = preview.querySelector('.preview-media');
-    media.hidden = !p.media;
-    media.style.cssText = p.media ? 'border-style:solid;background:center/cover no-repeat url("' + encodeURI(p.media) + '")' : '';
   }
   if (PROJECTS.length) show(0);   // the panel is never empty; it keeps the last project you pointed at
 
