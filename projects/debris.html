@@ -40,22 +40,23 @@
       <p class="back"><a href="index.html">← all projects</a></p>
       <article class="proj">
         <h1>Beach trash from the air</h1>
-        <p class="proj-meta">VIT · 2024 · with Meghana V Gaonkar, Leona E Joseph, advisor: Dr. R Balamurugan</p>
+        <p class="proj-meta">student researcher · VIT · 2024 · <a href="../assets/papers/uav-debris-paper.pdf" target="_blank" rel="noopener">paper (pdf) <span aria-hidden="true">↗</span></a></p>
+        <p class="proj-with">with Meghana V Gaonkar, Leona E Joseph, advisor: Dr. R Balamurugan</p>
         <ul class="proj-tags"><li>yolov8</li><li>uav</li><li>wise-iou</li></ul>
+        <div class="proj-hero"><figure><a href="../assets/projects/debris/detections.jpg" target="_blank" rel="noopener"><img src="../assets/projects/debris/detections.jpg" alt="two aerial photos, one of green water and one of a debris-covered shore, with red boxes and confidence scores around detected trash"></a><figcaption>yolov8 detections on drone shots of water and shoreline</figcaption></figure></div>
+        <p class="proj-mypart"><b>my part:</b> the YOLOv8 benchmark: five variants with and without a Wise-IoU loss, plus the hyperparameter tuning and augmentation</p>
         <div class="proj-grid">
           <section><h2>problem</h2><p>plastic on shorelines is hard to survey on foot; drones see a lot of coast, but something has to find the debris in the images.</p></section>
           <section><h2>what I built</h2><ul><li>a benchmark of five YOLOv8 variants (n, s, m, l, x) with and without a Wise-IoU loss</li><li>hyperparameter tuning and custom augmentation on a dataset combining two UAV sources (772 beach images and 40 river images), all labelled as one class, garbage</li><li>the 40 river images were augmented (blur, rotation, scale) into 120, for 892 images in all (772 + 120), split 636 / 128 / 128 into train, validation and test</li></ul></section>
           <section><h2>results</h2><ul><li>YOLOv8m went from 81.7% to 86.1% mAP@50</li><li>Wise-IoU hurt the largest models: YOLOv8l and YOLOv8x lost a lot of precision, and the paper suggests it may not scale well with larger models</li><li>hyperparameter tuning (rotation 45 degrees, flips 0.5 and 0.6, MixUp 0.05) lifted YOLOv8s from 80.8% to 83.5% mAP@50</li></ul></section>
         </div>
-      <div class="proj-figs">
-        <figure><img src="../assets/projects/debris/detections.jpg" alt="two aerial photos, one of green water and one of a debris-covered shore, with red boxes and confidence scores around detected trash" loading="lazy"><figcaption>yolov8 detections on drone shots of water and shoreline</figcaption></figure>
-        <figure><img src="../assets/projects/debris/pr-curves.jpg" alt="two precision-recall curves for yolov8m, one at 0.818 mAP@0.5 and one at 0.861 mAP@0.5, the second hugging the top right corner more closely" loading="lazy"><figcaption>yolov8m precision-recall curves, standard vs tuned hyperparameters and wiou</figcaption></figure>
-      </div>
-      <div class="proj-pdf">
-        <object data="../assets/papers/uav-debris-paper.pdf" type="application/pdf"><a href="../assets/papers/uav-debris-paper.pdf">open paper</a></object>
-        <p><a href="../assets/papers/uav-debris-paper.pdf" target="_blank" rel="noopener">open paper</a> · <a href="../assets/papers/uav-debris-paper.pdf" download>download</a></p>
-      </div>
+        <div class="proj-figs">
+          <figure><a href="../assets/projects/debris/pr-curves.jpg" target="_blank" rel="noopener"><img src="../assets/projects/debris/pr-curves.jpg" alt="two precision-recall curves for yolov8m, one at 0.818 mAP@0.5 and one at 0.861 mAP@0.5, the second hugging the top right corner more closely" loading="lazy"></a><figcaption>yolov8m precision-recall curves, standard vs tuned hyperparameters and wiou</figcaption></figure>
+        </div>
+        <p class="proj-pdf"><a href="../assets/papers/uav-debris-paper.pdf" target="_blank" rel="noopener">read the paper (pdf) <span aria-hidden="true">↗</span></a></p>
       </article>
+      <nav class="proj-pn" aria-label="more projects"><a href="raster.html" rel="prev">← True-scale 3D from drones</a><span aria-hidden="true"> · </span><a href="agent-harness.html" rel="next">next: Qwen3 agent harness →</a></nav>
+      <p class="proj-talk">want to talk? <a href="mailto:muruganmanishwaran@gmail.com">email</a> · <a href="../assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume</a></p>
     </main>
     <footer class="foot">
       <svg class="gizmo" viewBox="0 0 40 32" width="40" height="32" aria-hidden="true">

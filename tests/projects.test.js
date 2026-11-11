@@ -12,9 +12,9 @@ function test(name, fn) {
   catch (e) { failed++; console.log('FAIL ' + name + '\n     ' + e.message); }
 }
 
-test('every project has slug, title, oneLiner, tags (>=1), where, year, overview.problem, overview.built (>=1), overview.results (>=1)', () => {
+test('every project has slug, title, oneLiner, role, myPart, tags (>=1), year, overview.problem, overview.built (>=1), overview.results (>=1)', () => {
   PROJECTS.forEach(p => {
-    ['slug', 'title', 'oneLiner', 'where'].forEach(k => assert.ok(typeof p[k] === 'string' && p[k], p.slug + '.' + k));
+    ['slug', 'title', 'oneLiner', 'role', 'myPart'].forEach(k => assert.ok(typeof p[k] === 'string' && p[k], p.slug + '.' + k));
     assert.ok(Array.isArray(p.tags) && p.tags.length >= 1, p.slug + ' tags');
     assert.ok(typeof p.year === 'number', p.slug + ' year');
     assert.ok(p.overview && p.overview.problem, p.slug + ' problem');
@@ -41,9 +41,8 @@ test('pdf and pdfLabel are both present or both absent', () => {
   PROJECTS.forEach(p => assert.strictEqual(!!p.pdf, !!p.pdfLabel, p.slug));
 });
 
-test('there are 6 projects, newest year first', () => {
-  assert.strictEqual(PROJECTS.length, 6);
-  PROJECTS.forEach((p, i) => assert.ok(!i || p.year <= PROJECTS[i - 1].year, p.slug));
+test('the 6 projects come in the agreed order', () => {
+  assert.deepStrictEqual(PROJECTS.map(p => p.slug), ['raster', 'debris', 'agent-harness', 'sft-data', 'ai-town', 'price-forecasting']);
 });
 
 // ── generator ──
@@ -72,7 +71,7 @@ test('each project page has its own <title>, meta description, canonical and og:
 test('html special characters are escaped everywhere', () => {
   const X = `A & <B> "C" 'D'`, E = 'A &amp; &lt;B&gt; &quot;C&quot; &#39;D&#39;';
   const fake = Object.assign({}, PROJECTS[0], {
-    slug: 'fake', title: X, oneLiner: X, where: X, tags: [X], with: [X],
+    slug: 'fake', title: X, oneLiner: X, role: X, myPart: X, tags: [X], with: [X],
     overview: { problem: X, built: [X], results: [X] },
     figures: [{ src: 'assets/projects/raster/pipeline.jpg', alt: X, caption: X }], pdf: undefined, pdfLabel: undefined
   });
@@ -89,17 +88,47 @@ test('html special characters are escaped everywhere', () => {
   assert.ok((h.match(new RegExp(E, 'g')) || []).length >= 10, 'all fields escaped');
 });
 
-test('pages without a pdf have no pdf block and no <object>', () => {
-  PROJECTS.filter(p => !p.pdf).forEach(p => {
+test('no page embeds a pdf; pages without one have no pdf link', () => {
+  PROJECTS.forEach(p => {
     const h = pages['projects/' + p.slug + '.html'];
-    assert.ok(!h.includes('class="proj-pdf"') && !h.includes('<object'), p.slug);
+    assert.ok(!h.includes('<object'), p.slug + ' has an <object>');
+    if (!p.pdf) assert.ok(!h.includes('class="proj-pdf"') && !h.includes('(pdf)'), p.slug);
   });
 });
 
-test('pages with a pdf have both', () => {
+test('pages with a pdf link it in the meta line and near the bottom, in a new tab', () => {
   PROJECTS.filter(p => p.pdf).forEach(p => {
+    const h = pages['projects/' + p.slug + '.html'], a = '<a href="../' + p.pdf + '" target="_blank" rel="noopener">';
+    assert.ok(h.includes('<p class="proj-meta">' + p.role + ' · ' + p.year + ' · ' + a + p.pdfLabel + ' (pdf)'), p.slug + ' meta');
+    assert.ok(h.includes('<p class="proj-pdf">' + a + 'read the ' + p.pdfLabel + ' (pdf)'), p.slug + ' bottom');
+  });
+});
+
+test('page order: meta, with, tags, hero figure, my part, problem; other figures after the results', () => {
+  PROJECTS.forEach(p => {
+    const h = pages['projects/' + p.slug + '.html'], at = s => h.indexOf(s);
+    const seq = ['class="proj-meta"', p.with ? 'class="proj-with"' : null, 'class="proj-tags"', p.figures.length ? 'class="proj-hero"' : null,
+      'class="proj-mypart"', '<h2>problem</h2>', '<h2>results</h2>', p.figures.length > 1 ? 'class="proj-figs"' : null].filter(Boolean);
+    seq.forEach((k, i) => assert.ok(at(k) > 0 && (!i || at(k) > at(seq[i - 1])), p.slug + ': ' + k));
+    const hero = p.figures[0] && h.indexOf(p.figures[0].src, at('<main>'));   // (the head's og:image names it too)
+    if (p.figures[0]) assert.ok(hero > at('class="proj-hero"') && hero < at('class="proj-mypart"'), p.slug + ' hero');
+  });
+});
+
+test('every figure links to its full image in a new tab', () => {
+  PROJECTS.forEach(p => p.figures.forEach(f => {
     const h = pages['projects/' + p.slug + '.html'];
-    assert.ok(h.includes('<object data="../' + p.pdf + '"') && /<a [^>]*download/.test(h), p.slug);
+    assert.ok(h.includes('<a href="../' + f.src + '" target="_blank" rel="noopener"><img src="../' + f.src + '"'), p.slug + ' ' + f.src);
+  }));
+});
+
+test('prev/next links follow the project order and wrap at the ends; then email and resume', () => {
+  const n = PROJECTS.length;
+  PROJECTS.forEach((p, i) => {
+    const h = pages['projects/' + p.slug + '.html'], prev = PROJECTS[(i + n - 1) % n], next = PROJECTS[(i + 1) % n];
+    assert.ok(h.includes('<a href="' + prev.slug + '.html" rel="prev">← ' + prev.title + '</a>'), p.slug + ' prev');
+    assert.ok(h.includes('<a href="' + next.slug + '.html" rel="next">next: ' + next.title + ' →</a>'), p.slug + ' next');
+    assert.ok(/want to talk\? <a href="mailto:muruganmanishwaran@gmail.com">email<\/a> · <a href="..\/assets\/Manishwaran-Murugan-Resume.pdf"/.test(h), p.slug + ' talk');
   });
 });
 

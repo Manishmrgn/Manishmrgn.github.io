@@ -40,23 +40,24 @@
       <p class="back"><a href="index.html">← all projects</a></p>
       <article class="proj">
         <h1>True-scale 3D from drones</h1>
-        <p class="proj-meta">IISc Aerospace (AIRL) · 2024 · with Meghana V Gaonkar, Leona E Joseph, advisor: Dr. R Balamurugan (VIT), advisor: Dr. Suresh Sundaram (IISc)</p>
+        <p class="proj-meta">research intern (capstone) · IISc AIRL · 2024 · <a href="../assets/papers/raster-poster.pdf" target="_blank" rel="noopener">poster (pdf) <span aria-hidden="true">↗</span></a></p>
+        <p class="proj-with">with Meghana V Gaonkar, Leona E Joseph, advisor: Dr. R Balamurugan (VIT), advisor: Dr. Suresh Sundaram (IISc)</p>
         <ul class="proj-tags"><li>sfm</li><li>nerf</li><li>yolov8</li><li>aruco</li></ul>
+        <div class="proj-hero"><figure><a href="../assets/projects/raster/pipeline.jpg" target="_blank" rel="noopener"><img src="../assets/projects/raster/pipeline.jpg" alt="flow diagram of the RASTER pipeline from input images and fiducial detection to an absolute-scaled, oriented 3D reconstruction"></a><figcaption>the raster pipeline, from marker detection to a scaled mesh</figcaption></figure></div>
+        <p class="proj-mypart"><b>my part:</b> marker detection with YOLOv8 + cv2.aruco and the point-cloud background subtraction</p>
         <div class="proj-grid">
-          <section><h2>problem</h2><p>structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab&#39;s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and my part, with a three-person capstone team, was the marker detection and the point-cloud subtraction.</p></section>
+          <section><h2>problem</h2><p>structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab&#39;s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram); I worked on it with a three-person capstone team.</p></section>
           <section><h2>what I built</h2><ul><li>marker detection with YOLOv8 and cv2.aruco, feeding RASTER&#39;s absolute-scale step</li><li>the end-to-end reconstruction: structure from motion in Meshroom alongside a CUDA-optimized NeRF (Nerfstudio), scaled by the ArUco markers</li><li>synthetic training data from Unreal Engine 5, annotated automatically, with randomized markers, poses, lighting, blur and lens distortion</li><li>3D background subtraction (parallelized KD-Tree/FLANN and Octree) to pull an object out of a scene</li><li>a real dataset shot with a DSLR, one image every 5 degrees around a crate carrying a marker (72 images per circle), plus Unreal-generated scenes</li><li>ten rounds of detector training, using k-fold validation and synthetic scenes to hunt down false positives, and oriented bounding boxes instead of square ones</li></ul></section>
           <section><h2>results</h2><ul><li>detection reached 98.6% mAP@50 over 10 YOLOv8 + cv2.aruco pipelines</li><li>absolute scale recovered within 0.2 cm on an 18 cm marker</li><li>background subtraction on 10M-point clouds went from 27 h to 40 s (2,400x faster)</li><li>on a synthetic room scene, a 0.1 distance threshold cleaned out the sparse stray points better than 0.01 and recovered the skull model</li></ul></section>
         </div>
-      <div class="proj-figs">
-        <figure><img src="../assets/projects/raster/pipeline.jpg" alt="flow diagram of the RASTER pipeline from input images and fiducial detection to an absolute-scaled, oriented 3D reconstruction" loading="lazy"><figcaption>the raster pipeline, from marker detection to a scaled mesh</figcaption></figure>
-        <figure><img src="../assets/projects/raster/rescaled.jpg" alt="two views of a crate mesh with an aruco marker, measured before and after rescaling, with an 18 cm real marker and a scale factor of 4.1425" loading="lazy"><figcaption>the marker measures about 4 cm before rescaling and 18 cm after</figcaption></figure>
-        <figure><img src="../assets/projects/raster/clouds.jpg" alt="two point clouds of a skull model in orange: the left one still has stray points scattered around it, the right one is clean" loading="lazy"><figcaption>background subtraction: stray points left over (left) vs cleaned out (right)</figcaption></figure>
-      </div>
-      <div class="proj-pdf">
-        <object data="../assets/papers/raster-poster.pdf" type="application/pdf"><a href="../assets/papers/raster-poster.pdf">open poster</a></object>
-        <p><a href="../assets/papers/raster-poster.pdf" target="_blank" rel="noopener">open poster</a> · <a href="../assets/papers/raster-poster.pdf" download>download</a></p>
-      </div>
+        <div class="proj-figs">
+          <figure><a href="../assets/projects/raster/rescaled.jpg" target="_blank" rel="noopener"><img src="../assets/projects/raster/rescaled.jpg" alt="two views of a crate mesh with an aruco marker, measured before and after rescaling, with an 18 cm real marker and a scale factor of 4.1425" loading="lazy"></a><figcaption>the marker measures about 4 cm before rescaling and 18 cm after</figcaption></figure>
+          <figure><a href="../assets/projects/raster/clouds.jpg" target="_blank" rel="noopener"><img src="../assets/projects/raster/clouds.jpg" alt="two point clouds of a skull model in orange: the left one still has stray points scattered around it, the right one is clean" loading="lazy"></a><figcaption>background subtraction: stray points left over (left) vs cleaned out (right)</figcaption></figure>
+        </div>
+        <p class="proj-pdf"><a href="../assets/papers/raster-poster.pdf" target="_blank" rel="noopener">read the poster (pdf) <span aria-hidden="true">↗</span></a></p>
       </article>
+      <nav class="proj-pn" aria-label="more projects"><a href="price-forecasting.html" rel="prev">← Price forecasting</a><span aria-hidden="true"> · </span><a href="debris.html" rel="next">next: Beach trash from the air →</a></nav>
+      <p class="proj-talk">want to talk? <a href="mailto:muruganmanishwaran@gmail.com">email</a> · <a href="../assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume</a></p>
     </main>
     <footer class="foot">
       <svg class="gizmo" viewBox="0 0 40 32" width="40" height="32" aria-hidden="true">

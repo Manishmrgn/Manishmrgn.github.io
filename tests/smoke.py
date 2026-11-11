@@ -60,7 +60,7 @@ GOLF_CART_URL = "https://sketchfab.com/3d-models/golf-cart-db115793a8274dc18b2b2
 # ═══════════════════════════════════════════════════════════════════════════
 
 PROJECT_SLUGS = subprocess.run(["node", "-p", "require('./js/projects.js').map(p=>p.slug).join(',')"], capture_output=True, text=True, check=True, cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))).stdout.strip().split(",")
-PROJECT_PDF_SLUG = "raster"       # has a pdf; the others (e.g. ai-town) have none
+PROJECT_PDF_SLUG = "raster"       # has a pdf and three figures; ai-town has neither
 
 FAILS = []
 
@@ -554,12 +554,12 @@ def project_checks(browser):
     check("home: nav keys home · projects · demos, home marked current",
           navs == [["home", "index.html", "page"], ["projects", "projects/index.html", None], ["demos", "demos.html", None]], str(navs))
     hrefs = page.eval_on_selector_all("#project-list a.row", "els => els.map(a => a.getAttribute('href'))")
-    check("home: 7 project rows, each links to projects/<slug>.html", hrefs == [f"projects/{s}.html" for s in PROJECT_SLUGS], str(hrefs))
+    check("home: one row per project, in order, each links to projects/<slug>.html", hrefs == [f"projects/{s}.html" for s in PROJECT_SLUGS], str(hrefs))
     page.close()
 
     page = open_page(browser, DESKTOP_VIEWPORT, path="projects/index.html")
     hrefs = page.eval_on_selector_all(".cards .card h2 a", "els => els.map(a => a.getAttribute('href'))")
-    check("projects: index lists 7 cards, each links to its page",
+    check("projects: index lists one card per project, each links to its page",
           sorted(hrefs) == sorted(f"{s}.html" for s in PROJECT_SLUGS) and all((root / "projects" / h).exists() for h in hrefs), str(hrefs))
     page.close()
 
@@ -569,7 +569,7 @@ def project_checks(browser):
         if page.errors:
             bad.append(f"{slug}: {page.errors}")
         for h in page.eval_on_selector_all("main a[href], object[data]", "els => els.map(e => e.getAttribute('href') || e.getAttribute('data'))"):
-            if not h.startswith("http") and not (root / "projects" / h.split("#")[0]).resolve().exists():
+            if not h.startswith(("http", "mailto:")) and not (root / "projects" / h.split("#")[0]).resolve().exists():
                 bad.append(f"{slug}: {h}")
         page.close()
     check("project pages: load with no console errors; every link and pdf returns 200", not bad, "; ".join(bad))
@@ -577,11 +577,19 @@ def project_checks(browser):
     for slug in (PROJECT_PDF_SLUG, "ai-town"):
         page = open_page(browser, MOBILE_VIEWPORT, path=f"projects/{slug}.html")
         o = page.evaluate("document.documentElement.scrollWidth - innerWidth")
-        embed = page.locator(".proj-pdf object")
-        link_ok = page.locator(".proj-pdf > p a").first.is_visible() if embed.count() else True
-        check(f"project page {slug} at 390px: no horizontal overflow; the pdf is a link, the embed is hidden",
-              o <= 0 and (not embed.count() or (embed.first.is_hidden() and link_ok)), f"overflow {o}px")
+        pdf_ok = page.locator(".proj-meta a").first.is_visible() and page.locator(".proj-pdf a").first.is_visible() if slug == PROJECT_PDF_SLUG else page.locator(".proj-pdf").count() == 0
+        check(f"project page {slug} at 390px: no horizontal overflow, no <object>, the pdf is a visible link", o <= 0 and page.locator("object").count() == 0 and pdf_ok, f"overflow {o}px")
         page.close()
+
+    page = open_page(browser, DESKTOP_VIEWPORT, path=f"projects/{PROJECT_PDF_SLUG}.html")
+    pn = page.eval_on_selector_all(".proj-pn a", "els => els.map(a => [a.getAttribute('rel'), a.getAttribute('href')])")
+    i, n = PROJECT_SLUGS.index(PROJECT_PDF_SLUG), len(PROJECT_SLUGS)
+    check("project page: prev / next links in the project order", pn == [["prev", f"{PROJECT_SLUGS[(i - 1) % n]}.html"], ["next", f"{PROJECT_SLUGS[(i + 1) % n]}.html"]], str(pn))
+    figs = page.evaluate("[...document.querySelectorAll('.proj figure')].map(f => { const a = f.querySelector('a'), i = f.querySelector('img'); return !!a && a.target === '_blank' && a.getAttribute('href') === i.getAttribute('src') && i.getBoundingClientRect().height <= innerHeight * 0.7 + 1; })")
+    check("project page: every figure links to its image, no taller than 70vh", figs and all(figs), str(figs))
+    c = page.evaluate("(() => { const m = document.querySelector('main').getBoundingClientRect(); return Math.abs((m.left + m.right) / 2 - innerWidth / 2); })()")
+    check("project page: the content column is centred", c <= 2, str(c))
+    page.close()
 
     page = open_page(browser, DESKTOP_VIEWPORT, path="projects/ai-town.html")
     page.evaluate("localStorage.setItem('portfolio-theme', 'dark')")
@@ -655,6 +663,11 @@ def back_link_checks(browser):
         check("back link: from the projects index it reads '← all projects'", back()[0] == "← all projects", str(back()))
         page.click(".back a"); page.wait_for_load_state()
         check("back link: from the projects index it goes back there", page.url == base + "projects/index.html", page.url)
+        page.goto(base + "projects/raster.html"); page.wait_for_load_state()
+        page.click('.proj-pn a[rel="next"]'); page.wait_for_load_state()
+        check("back link: from another project it reads '← back'", back()[0] == "← back", str(back()))
+        page.click(".back a"); page.wait_for_load_state()
+        check("back link: ... and returns there", page.url == base + "projects/raster.html", page.url)
         page.close()
     finally:
         srv.terminate(); srv.wait()

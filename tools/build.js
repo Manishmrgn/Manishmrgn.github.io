@@ -90,36 +90,42 @@ ${body}
 `;
 }
 
-const meta = p => [p.where, p.year].concat(p.with && p.with.length ? ['with ' + p.with.join(', ')] : []).map(esc).join(' · ');
+const meta = p => [p.role, p.year].map(esc).join(' · ');
+const pdfLink = (p, text) => `<a href="../${esc(p.pdf)}" target="_blank" rel="noopener">${text}</a>`;
 const tags = p => `<ul class="proj-tags">${p.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`;
 const list = a => `<ul>${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+// each figure opens the full image in a new tab; only the hero (above the fold) loads eagerly
+const figure = (f, lazy) => `<figure><a href="../${esc(f.src)}" target="_blank" rel="noopener"><img src="../${esc(f.src)}" alt="${esc(f.alt)}"${lazy ? ' loading="lazy"' : ''}></a><figcaption>${esc(f.caption)}</figcaption></figure>`;
 
-function projectPage(p) {
-  const back = '<p class="back"><a href="index.html">← all projects</a></p>';
-  const fig = p.figures.length ? `
-      <div class="proj-figs">${p.figures.map(f => `
-        <figure><img src="../${esc(f.src)}" alt="${esc(f.alt)}" loading="lazy"><figcaption>${esc(f.caption)}</figcaption></figure>`).join('')}
-      </div>` : '';
-  const pdf = p.pdf ? `
-      <div class="proj-pdf">
-        <object data="../${esc(p.pdf)}" type="application/pdf"><a href="../${esc(p.pdf)}">open ${esc(p.pdfLabel)}</a></object>
-        <p><a href="../${esc(p.pdf)}" target="_blank" rel="noopener">open ${esc(p.pdfLabel)}</a> · <a href="../${esc(p.pdf)}" download>download</a></p>
-      </div>` : '';
-  const body = `      ${back}
+// prev/next follow the order in js/projects.js, wrapping at the ends
+function projectPage(p, projects, i) {
+  const n = projects.length, prev = projects[(i + n - 1) % n], next = projects[(i + 1) % n];
+  const [hero, ...rest] = p.figures;
+  const pdf = p.pdf ? ` · ${pdfLink(p, esc(p.pdfLabel) + ' (pdf) <span aria-hidden="true">↗</span>')}` : '';
+  const body = `      <p class="back"><a href="index.html">← all projects</a></p>
       <article class="proj">
         <h1>${esc(p.title)}</h1>
-        <p class="proj-meta">${meta(p)}</p>
-        ${tags(p)}
+        <p class="proj-meta">${meta(p)}${pdf}</p>${p.with && p.with.length ? `
+        <p class="proj-with">with ${esc(p.with.join(', '))}</p>` : ''}
+        ${tags(p)}${hero ? `
+        <div class="proj-hero">${figure(hero, false)}</div>` : ''}
+        <p class="proj-mypart"><b>my part:</b> ${esc(p.myPart)}</p>
         <div class="proj-grid">
           <section><h2>problem</h2><p>${esc(p.overview.problem)}</p></section>
           <section><h2>what I built</h2>${list(p.overview.built)}</section>
           <section><h2>results</h2>${list(p.overview.results)}</section>
-        </div>${fig}${pdf}
-      </article>`;
+        </div>${rest.length ? `
+        <div class="proj-figs">${rest.map(f => `
+          ${figure(f, true)}`).join('')}
+        </div>` : ''}${p.pdf ? `
+        <p class="proj-pdf">${pdfLink(p, 'read the ' + esc(p.pdfLabel) + ' (pdf) <span aria-hidden="true">↗</span>')}</p>` : ''}
+      </article>
+      <nav class="proj-pn" aria-label="more projects"><a href="${esc(prev.slug)}.html" rel="prev">← ${esc(prev.title)}</a><span aria-hidden="true"> · </span><a href="${esc(next.slug)}.html" rel="next">next: ${esc(next.title)} →</a></nav>
+      <p class="proj-talk">want to talk? <a href="mailto:${EMAIL}">email</a> · <a href="../${RESUME}" target="_blank" rel="noopener">resume</a></p>`;
   return layout({
     title: p.title + ' — Manishwaran Murugan', desc: p.oneLiner, cur: 'projects', scripts: ['js/back.js'],
     url: SITE + 'projects/' + p.slug + '.html',
-    image: p.figures[0] ? SITE + p.figures[0].src : null, body
+    image: hero ? SITE + hero.src : null, body
   });
 }
 
@@ -141,7 +147,7 @@ function indexPage(projects) {
 
 function render(projects = PROJECTS) {
   const out = { 'projects/index.html': indexPage(projects) };
-  projects.forEach(p => { out['projects/' + p.slug + '.html'] = projectPage(p); });
+  projects.forEach((p, i) => { out['projects/' + p.slug + '.html'] = projectPage(p, projects, i); });
   const urls = [SITE, SITE + 'projects/', SITE + 'demos.html'].concat(projects.map(p => SITE + 'projects/' + p.slug + '.html'));
   out['sitemap.xml'] = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`;
   return out;

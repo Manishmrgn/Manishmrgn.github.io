@@ -44,8 +44,8 @@ Source assets live in ../portfolio-voxel-design; screenshots in ../portfolio-vox
 - Home lists all 6 projects from `js/projects.js` (NeRF + SfM folded into raster: same project); each row opens `projects/<slug>.html`.
 - `node tools/build.js` writes `projects/<slug>.html`, `projects/index.html` and `sitemap.xml` from `js/projects.js`;
   `node tools/build.js --check` fails if they are stale. Generated files are committed. `demos.html` is hand-written.
-- Add a project: add an entry to `js/projects.js` (slug, title, oneLiner, tags, where, year, overview, figures, optional
-  `pdf` + `pdfLabel`, optional `media`), put figures in `assets/projects/<slug>/`, run `node tools/build.js` (it also deletes pages of removed projects), run the tests.
+- Add a project: add an entry to `js/projects.js` (slug, title, year, role, myPart, oneLiner, tags, overview, figures, optional
+  `with`, `pdf` + `pdfLabel`, `media`; its place in the list is its place on the site), put figures in `assets/projects/<slug>/`, run `node tools/build.js` (it also deletes pages of removed projects), run the tests.
 - Add a showcase: add it to both `index.html` and `demos.html` (see README).
 - Tests: `node tests/{brain,sfm,golf,projects}.test.js` and `uv run --with playwright python tests/smoke.py`.
 

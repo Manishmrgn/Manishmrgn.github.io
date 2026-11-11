@@ -170,7 +170,7 @@ html:not([data-theme]) .theme-sw { display: none; }   /* no script, no switch */
 /* generated pages have no stage: they scroll like a normal document */
 body.sub { overflow: auto; }
 body.sub .page { height: auto; min-height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; }
-.page > main:not(.stage) { max-width: 46em; width: 100%; padding: 28px 0 40px; }
+.page > main:not(.stage) { max-width: 46em; width: 100%; margin: 0 auto; padding: 28px 0 40px; }   /* centred under the full-width header */
 main h1 { font-size: 34px; font-weight: 400; line-height: 1.15; letter-spacing: -0.005em; }
 main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--ink-2); }
 /* demos.html: a wide scrolling page; the showcase block is full width */
@@ -178,24 +178,33 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .demo-blurbs { margin: 8px 0 14px; font: 12px/1.6 var(--mono); color: var(--ink-3); }
 .demo-blurb b { color: var(--ink-2); font-weight: 500; margin-right: 8px; }
 .back { font: 12px/1.6 var(--mono); margin: 0 0 18px; }
-.back a { color: var(--ink-2); text-decoration: none; }
-.back a:hover { color: var(--ink); text-decoration: underline; }
-.proj-meta { font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 8px; }
+.back a, .proj-pn a { color: var(--ink-2); text-decoration: none; }
+.back a:hover, .proj-pn a:hover { color: var(--ink); text-decoration: underline; }
+.proj-meta { font: 12px/1.6 var(--mono); color: var(--ink-2); margin-top: 8px; }
+.proj-meta a, .proj-pdf a { color: var(--accent-text); }
+.proj-with { font: 11px/1.6 var(--mono); color: var(--ink-3); margin-top: 2px; }
 .proj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; font: 11px/1.6 var(--mono); color: var(--ink-3); }
 .proj-tags li { padding: 0 8px; border: 1px solid var(--line); border-radius: 10px; }
-.proj-grid { margin-top: 28px; display: grid; gap: 22px; }
+.proj-hero { margin-top: 24px; }
+.proj-mypart { margin-top: 24px; font-size: 18px; line-height: 1.5; }
+.proj-mypart b { font: 12px/1 var(--mono); color: var(--ink-3); margin-right: 4px; }
+.proj-grid { margin-top: 24px; display: grid; gap: 22px; }
 .proj-grid h2 { margin-bottom: 4px; }
 .proj-grid p { line-height: 1.6; }
 .proj-grid ul { padding-left: 1.1em; }
 .proj-grid li { list-style: disc; margin-top: 4px; }
 .proj-grid li::marker { color: var(--ink-4); }
 .proj-figs { margin-top: 28px; display: grid; gap: 22px; }
-.proj-figs figure { margin: 0; }
-.proj-figs img { display: block; max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; }
-.proj-figs figcaption { font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 6px; }
-.proj-pdf { margin-top: 28px; }
-.proj-pdf object { display: block; width: 100%; height: 70vh; min-height: 420px; border: 1px solid var(--line); border-radius: 4px; }
-.proj-pdf p { font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 8px; }
+.proj figure { margin: 0; }
+.proj figure a { display: block; width: fit-content; max-width: 100%; }
+.proj figure img { display: block; max-width: 100%; height: auto; max-height: 70vh; object-fit: contain; border: 1px solid var(--line); border-radius: 4px; }   /* tall figures stay within a screen */
+.proj figcaption { font: 12px/1.6 var(--mono); color: var(--ink-3); margin-top: 6px; }
+:root[data-theme="dark"] .proj figure img { filter: brightness(0.92); }   /* the figures are drawn for white paper */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .proj figure img { filter: brightness(0.92); } }
+.proj-pdf { margin-top: 28px; font: 13px/1.6 var(--mono); }
+.proj-pn { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line); font: 12px/1.9 var(--mono); color: var(--ink-3); }
+.proj-talk { margin-top: 6px; font: 12px/1.6 var(--mono); color: var(--ink-3); }
+.proj-talk a { color: var(--ink-2); }
 .cards { margin-top: 24px; display: grid; gap: 14px; }
 .card { padding: 14px 16px; border: 1px solid var(--line); border-radius: 6px; }
 .card h2 { font-size: 20px; font-style: normal; color: var(--ink); }
@@ -205,7 +214,6 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .card .proj-meta { margin-top: 2px; }
 .card > a { display: inline-block; margin-top: 8px; font: 12px/1.6 var(--mono); color: var(--accent-text); }
 @media (max-width: 600px) {
-  .proj-pdf object { display: none; }   /* a squeezed embed is useless on a phone: keep the link */
   main h1 { font-size: 28px; }
 }
 

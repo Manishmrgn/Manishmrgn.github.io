@@ -1,5 +1,6 @@
 /* projects.js — the project list. One source for the generated pages (tools/build.js) and the home page.
- * Edit text here, then re-run the generator. Newest year first.
+ * Edit text here, then re-run the generator. The order here is the order on the home page, the projects index and
+ * the prev/next links (tests/projects.test.js pins it).
  *
  * Browser:  window.PROJECTS      Node:  require('./js/projects.js')
  */
@@ -8,82 +9,16 @@
 
   // ═══════════════════════════ DATA — edit here ═══════════════════════════
   var PROJECTS = [
-    { slug: 'sft-data', title: 'Synthetic SFT data', where: 'Dimaag-AI', year: 2026,
-      oneLiner: 'Generating fine-tuning data for a domain-specific LLM tool-calling assistant.',
-      tags: ['llm', 'sft', 'data'],
-      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
-      overview: {
-        problem: 'a tool-calling assistant needs training dialogues that match what its backend really returns, and hand-written ones drift from that.',
-        built: [
-          'a pipeline that writes multi-turn dialogues grounded in real backend tool outputs',
-          'multi-tool routing driven by versioned YAML constraint prompts',
-          'regex validators with corrective retry loops, in place of hard-coded output patches'
-        ],
-        results: [
-          'synthetic artifacts get caught and retried instead of leaking into the training data'
-        ]
-      },
-      figures: [] },
-
-    { slug: 'agent-harness', title: 'Qwen3 agent harness', where: 'Dimaag-AI', year: 2026,
-      oneLiner: 'A harness that runs a Qwen3 32B agent with sandboxed code and context compaction.',
-      tags: ['llm', 'agents', 'vlm'],
-      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
-      overview: {
-        problem: 'an agent with many tools burns its context window on schemas and old turns before it does any work.',
-        built: [
-          'a Qwen3 32B agent harness with network-isolated code execution',
-          'LLM-based context compaction, and deduplicated tool schemas',
-          'document VLM and RAG ingest tools, and a benchmark of Qwen3-VL 32B and Qwen2.5-VL 72B'
-        ],
-        results: [
-          'deduplicating tool schemas cut the fixed per-call cost 45% (9.2k to 5.0k tokens)',
-          '85% of a 32k context window stays free'
-        ]
-      },
-      figures: [] },
-
-    { slug: 'price-forecasting', title: 'Price forecasting', where: 'ITC Infotech', year: 2025,
-      oneLiner: 'Time series price forecasting for an agri business, with Type-2 fuzzy logic regression.',
-      tags: ['forecasting', 'time series'],
-      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
-      overview: {
-        problem: 'the ITC Ltd. agri business needed price forecasts it could plan around.',
-        built: [
-          'a time series model using Type-2 fuzzy logic regression',
-          'automated data pipelines, controlled experiments, and evaluation with MAE, RMSE and ablations'
-        ],
-        results: [
-          '92.7% forecast accuracy (7.3% MAPE)'
-        ]
-      },
-      figures: [] },
-
-    { slug: 'ai-town', title: 'AI-Town narrative sim', where: 'personal', year: 2025,
-      oneLiner: 'An AI-Town fantasy world where NPC conversations turn into story events.',
-      tags: ['llm', 'llama-3', 'docker'],
-      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
-      overview: {
-        problem: 'AI-Town characters talk, but nothing they say adds up to a story.',
-        built: [
-          'an extension of AI-Town into an interactive fantasy world, with an offline LLaMA-3 model in Docker for local NPC dialogue and world updates',
-          'a real-time narration system that turns NPC conversations into story events',
-          'player-NPC interactions that can change the narrative'
-        ],
-        results: [
-          'the whole loop runs offline, on a local LLaMA-3 model'
-        ]
-      },
-      figures: [] },
-
-    { slug: 'raster', title: 'True-scale 3D from drones', where: 'IISc Aerospace (AIRL)', year: 2024,
+    { slug: 'raster', title: 'True-scale 3D from drones', year: 2024,
+      role: 'research intern (capstone) · IISc AIRL',
+      myPart: 'marker detection with YOLOv8 + cv2.aruco and the point-cloud background subtraction',
       oneLiner: 'Marker detection and 3D cleanup that give drone reconstructions real-world scale.',
       tags: ['sfm', 'nerf', 'yolov8', 'aruco'],
       media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan (VIT)', 'advisor: Dr. Suresh Sundaram (IISc)'],
       pdf: 'assets/papers/raster-poster.pdf', pdfLabel: 'poster',
       overview: {
-        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and my part, with a three-person capstone team, was the marker detection and the point-cloud subtraction.',
+        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram); I worked on it with a three-person capstone team.',
         built: [
           'marker detection with YOLOv8 and cv2.aruco, feeding RASTER\'s absolute-scale step',
           'the end-to-end reconstruction: structure from motion in Meshroom alongside a CUDA-optimized NeRF (Nerfstudio), scaled by the ArUco markers',
@@ -105,7 +40,9 @@
         { src: 'assets/projects/raster/clouds.jpg', alt: 'two point clouds of a skull model in orange: the left one still has stray points scattered around it, the right one is clean', caption: 'background subtraction: stray points left over (left) vs cleaned out (right)' }
       ] },
 
-    { slug: 'debris', title: 'Beach trash from the air', where: 'VIT', year: 2024,
+    { slug: 'debris', title: 'Beach trash from the air', year: 2024,
+      role: 'student researcher · VIT',
+      myPart: 'the YOLOv8 benchmark: five variants with and without a Wise-IoU loss, plus the hyperparameter tuning and augmentation',
       oneLiner: 'Spotting coastal debris in drone images with YOLOv8 and Wise-IoU.',
       tags: ['yolov8', 'uav', 'wise-iou'],
       media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
@@ -127,7 +64,83 @@
       figures: [
         { src: 'assets/projects/debris/detections.jpg', alt: 'two aerial photos, one of green water and one of a debris-covered shore, with red boxes and confidence scores around detected trash', caption: 'yolov8 detections on drone shots of water and shoreline' },
         { src: 'assets/projects/debris/pr-curves.jpg', alt: 'two precision-recall curves for yolov8m, one at 0.818 mAP@0.5 and one at 0.861 mAP@0.5, the second hugging the top right corner more closely', caption: 'yolov8m precision-recall curves, standard vs tuned hyperparameters and wiou' }
-      ] }
+      ] },
+
+    { slug: 'agent-harness', title: 'Qwen3 agent harness', year: 2026,
+      role: 'AI engineer intern · Dimaag-AI',
+      myPart: 'the Qwen3 32B agent harness: network-isolated code execution, LLM-based context compaction and deduplicated tool schemas',
+      oneLiner: 'A harness that runs a Qwen3 32B agent with sandboxed code and context compaction.',
+      tags: ['llm', 'agents', 'vlm'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
+      overview: {
+        problem: 'an agent with many tools burns its context window on schemas and old turns before it does any work.',
+        built: [
+          'a Qwen3 32B agent harness with network-isolated code execution',
+          'LLM-based context compaction, and deduplicated tool schemas',
+          'document VLM and RAG ingest tools, and a benchmark of Qwen3-VL 32B and Qwen2.5-VL 72B'
+        ],
+        results: [
+          'deduplicating tool schemas cut the fixed per-call cost 45% (9.2k to 5.0k tokens)',
+          '85% of a 32k context window stays free'
+        ]
+      },
+      figures: [] },
+
+    { slug: 'sft-data', title: 'Synthetic SFT data', year: 2026,
+      role: 'AI engineer intern · Dimaag-AI',
+      myPart: 'the synthetic SFT data pipeline: grounded multi-turn dialogues, YAML-driven tool routing, and regex validators with retry loops',
+      oneLiner: 'Generating fine-tuning data for a domain-specific LLM tool-calling assistant.',
+      tags: ['llm', 'sft', 'data'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
+      overview: {
+        problem: 'a tool-calling assistant needs training dialogues that match what its backend really returns, and hand-written ones drift from that.',
+        built: [
+          'a pipeline that writes multi-turn dialogues grounded in real backend tool outputs',
+          'multi-tool routing driven by versioned YAML constraint prompts',
+          'regex validators with corrective retry loops, in place of hard-coded output patches'
+        ],
+        results: [
+          'synthetic artifacts get caught and retried instead of leaking into the training data'
+        ]
+      },
+      figures: [] },
+
+    { slug: 'ai-town', title: 'AI-Town narrative sim', year: 2025,
+      role: 'personal project',
+      myPart: 'all of it: the offline LLaMA-3 setup in Docker, the narration system and the player-NPC interactions',
+      oneLiner: 'An AI-Town fantasy world where NPC conversations turn into story events.',
+      tags: ['llm', 'llama-3', 'docker'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
+      overview: {
+        problem: 'AI-Town characters talk, but nothing they say adds up to a story.',
+        built: [
+          'an extension of AI-Town into an interactive fantasy world, with an offline LLaMA-3 model in Docker for local NPC dialogue and world updates',
+          'a real-time narration system that turns NPC conversations into story events',
+          'player-NPC interactions that can change the narrative'
+        ],
+        results: [
+          'the whole loop runs offline, on a local LLaMA-3 model'
+        ]
+      },
+      figures: [] },
+
+    { slug: 'price-forecasting', title: 'Price forecasting', year: 2025,
+      role: 'business analyst · ITC Infotech',
+      myPart: 'the Type-2 fuzzy logic regression model, its data pipelines and its evaluation',
+      oneLiner: 'Time series price forecasting for an agri business, with Type-2 fuzzy logic regression.',
+      tags: ['forecasting', 'time series'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
+      overview: {
+        problem: 'the ITC Ltd. agri business needed price forecasts it could plan around.',
+        built: [
+          'a time series model using Type-2 fuzzy logic regression',
+          'automated data pipelines, controlled experiments, and evaluation with MAE, RMSE and ablations'
+        ],
+        results: [
+          '92.7% forecast accuracy (7.3% MAPE)'
+        ]
+      },
+      figures: [] }
   ];
   // ═══════════════════════════════════════════════════════════════════════════
 
