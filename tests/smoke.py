@@ -33,6 +33,7 @@ SFM_REFINE_WAIT_MS = 2000         # auto-refine starts 0.7s after a change and r
 SFM_FILM_TIMEOUT_MS = 9000        # "film it" takes about 4s
 SFM_FILM_FRAMES = 24              # keep in step with FILM_FRAMES in js/sfm.js
 SFM_MAX_CAMS = 16                 # … and MAX_CAMS
+SFM_MATCH_LINES = 150             # … and MATCH_LINES
 SFM_CONTEXT_TIMEOUT_MS = 12000    # a context message may wait out the previous one (4s) first
 SFM_HELP_MAX_WORDS = 70
 SFM_TEACH_FIRST = "drag the cameras. points seen twice become 3D."        # keep in step with CONTEXT in js/sfm.js
@@ -179,6 +180,9 @@ def sfm_checks(browser):
     page.wait_for_function(f"document.getElementById('sfm-stat-frames').textContent === '{SFM_FILM_FRAMES}'", timeout=SFM_FILM_TIMEOUT_MS)
     check("sfm: film it adds frames (not cameras) and points", int(sfm_stat(page, "points")) > points_before and sfm_stat(page, "cams") == "3"
           and page.locator(".sfm-cam").count() == 3, f"{points_before} -> {sfm_stat(page, 'points')}")
+    ml = page.get_attribute("#sfm-thumbs", "data-match-lines")
+    check(f"sfm: at most {SFM_MATCH_LINES} match lines drawn, however many matches", ml is not None and 0 < int(ml) <= SFM_MATCH_LINES, f"{ml} lines, {sfm_stat(page, 'matches')} matches")
+    check("sfm: at 1280 the scene picker keeps its · separators", page.evaluate("[...document.querySelectorAll('#sfm-objs > span[aria-hidden]')].every(e => getComputedStyle(e).display !== 'none')"))
     check("sfm: film makes ONE filmstrip thumb, labelled with its frame count", page.locator("#sfm-film-thumb:visible").count() == 1
           and f"{SFM_FILM_FRAMES} frames" in page.get_attribute("#sfm-film-thumb", "aria-label"))
     box = page.locator("#sfm-film-thumb").bounding_box()
@@ -823,6 +827,8 @@ def split_checks(browser):
     t1, v1 = page.inner_text("#split-toggle"), split_val(page)
     page.click("#split-toggle"); page.wait_for_timeout(SPLIT_ANIM_WAIT_MS)
     t2, v2 = page.inner_text("#split-toggle"), split_val(page)
+    kb = page.evaluate("(() => { const b = document.getElementById('split-toggle'), cs = getComputedStyle(b), t = document.getElementById('showcase-tabs').getBoundingClientRect(), r = b.getBoundingClientRect(); return { border: cs.borderTopStyle !== 'none' && parseFloat(cs.borderTopWidth) >= 1, h: Math.round(r.height), sameRow: Math.abs((r.top + r.bottom) / 2 - (t.top + t.bottom) / 2) < 6 }; })()")
+    check("split: expand is a key-style button on the tabs' row", kb["border"] and 20 <= kb["h"] <= 26 and kb["sameRow"], str(kb))
     check("split: expand toggle goes expanded, then back", (t0.strip(), t1.strip(), t2.strip()) == ("\u2922 expand", "\u2924 shrink", "\u2922 expand")
           and (v1, v2) == (SPLIT_EXPANDED, SPLIT_DEFAULT), repr((t0, t1, t2, v1, v2)))
 
@@ -947,6 +953,8 @@ def demos_checks(browser):
             seen.append([page.is_visible(f"#{j}") for j in ids])
         check(f"demos ({label}): the three tabs switch panels", seen == [[k == n for k in range(3)] for n in range(3)], str(seen))
         check(f"demos ({label}): a one-line description for each demo", page.locator(".demo-blurb").count() == 3)
+        rel = page.eval_on_selector_all(".demo-blurb a", "els => els.map(a => [a.closest('li').querySelector('b').textContent, a.getAttribute('href')])")
+        check(f"demos ({label}): sfm in a box links to its project", rel == [["sfm in a box", "projects/raster.html"]], str(rel))
         o = page.evaluate("document.documentElement.scrollWidth - innerWidth")
         check(f"demos ({label}): no horizontal overflow", o <= 0, f"{o}px")
         check(f"demos ({label}): no console errors", not page.errors, "; ".join(page.errors))

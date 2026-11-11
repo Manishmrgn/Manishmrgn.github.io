@@ -14,6 +14,7 @@
   var SCENE_H_AT_MAX = 372;
   var ORIGIN_Y_AT_MAX = 246;       // screen y of the scene's centre on the ground
   var GROUND = 5;                  // ground tile half-size, voxels
+  var MATCH_LINES = 150;           // match lines drawn between the selected camera and its partner, sampled evenly: thousands paint the thumbnails solid green
   var THUMB_MAX_W = 92, THUMB_MIN_W = 42, THUMB_GAP = 4;   // the camera strip: one row, thumbnails shrink to fit, then the strip scrolls sideways; the selected one and its partner come first
   var MAX_CAMS = 16;               // draggable cameras (film frames are not cameras you can drag)
   var START_CAMS = [[15, 14], [100, 28], [205, 22]];   // azimuth°, elevation°: spread enough that all four walls are seen
@@ -632,10 +633,14 @@
     if (partner < 0) return;
     var a = slotXY(0), b = slotXY(1);                        // matches: the same landmark in both views
     tctx.strokeStyle = rgba(C.accent, 0.6); tctx.lineWidth = 0.75;
-    obs[sel].forEach(function (o, id) {
-      var q = obs[partner][id];
-      if (o && q) line(tctx, [a[0] + o[0] * k, a[1] + o[1] * k], [b[0] + q[0] * k, b[1] + q[1] * k]);
-    });
+    var pairs = [];
+    obs[sel].forEach(function (o, id) { var q = obs[partner][id]; if (o && q) pairs.push([o, q]); });
+    var step = Math.max(1, pairs.length / MATCH_LINES);
+    for (var i = 0; i < pairs.length; i += step) {
+      var o = pairs[Math.floor(i)][0], q = pairs[Math.floor(i)][1];
+      line(tctx, [a[0] + o[0] * k, a[1] + o[1] * k], [b[0] + q[0] * k, b[1] + q[1] * k]);
+    }
+    thumbs.dataset.matchLines = Math.ceil(pairs.length / step);   // read by tests/smoke.py
   }
 
   // ─────────────────────────────── input ───────────────────────────────

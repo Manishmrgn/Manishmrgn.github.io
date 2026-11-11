@@ -178,6 +178,7 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 .page > main.demos { max-width: none; }
 .demo-blurbs { margin: 8px 0 14px; font: 12px/1.6 var(--mono); color: var(--ink-3); }
 .demo-blurb b { color: var(--ink-2); font-weight: 500; margin-right: 8px; }
+.demo-blurb a { color: var(--accent-text); }
 .back { font: 12px/1.6 var(--mono); margin: 0 0 18px; }
 .back a, .proj-pn a { color: var(--ink-2); text-decoration: none; }
 .back a:hover, .proj-pn a:hover { color: var(--ink); text-decoration: underline; }
@@ -264,10 +265,9 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
 /* ───────── dog widget ───────── */
 .showcases { grid-area: dog; align-self: start; min-width: 0; }
 .showcase-intro { font-size: 15px; font-style: italic; line-height: 1.35; color: var(--ink-2); margin-bottom: 6px; }
-.tabrow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
-.tabs { display: flex; gap: 16px; }
-.split-toggle { font: 11px/1.6 var(--mono); color: var(--ink-3); white-space: nowrap; }
-.split-toggle:hover { color: var(--ink); }
+.tabrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 6px; }
+.tabs { display: flex; gap: 14px; }
+.key-sm { display: inline-block; height: 22px; margin: -2px 0; padding: 0 7px; font-size: 11px; line-height: 20px; white-space: nowrap; }   /* the nav key, smaller; the negative margin keeps the tab row's height */
 .tab { font: 11px/1.6 var(--mono); color: var(--ink-3); padding: 0 1px 1px; border-bottom: 1px solid transparent; white-space: nowrap; }   /* three tabs and the expand toggle share one line at the narrowest split */
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
@@ -485,10 +485,13 @@ main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--in
   .sfm-split { flex-wrap: nowrap; }                /* never stack on desktop: js/sfm.js shrinks the canvases to fit */
   .sfm-pane { flex: 1 1 0; }                         /* equal halves; captions wrap instead of widening the pane */
   .sfm-pane { container-type: inline-size; }
-  @container (max-width: 200px) {   /* the narrowest split: the picker keeps one line, separators become gaps */
+  @container (max-width: 200px) {   /* a narrow split: the picker keeps one line, separators and all */
     .sfm-cap { font-size: 10px; }
+    .sfm-objs button { padding: 0; }
+  }
+  @container (max-width: 165px) {   /* the narrowest split: separators become gaps */
     .sfm-objs > span[aria-hidden] { display: none; }
-    .sfm-objs button { margin-right: 6px; padding: 0; }
+    .sfm-objs button { margin-right: 6px; }
     .sfm-objs button:last-child { margin-right: 0; }
   }
   @container (max-width: 280px) { .sfm-lead { display: none; } }   /* narrow pane: keep each caption on one line (the canvases' labels say the rest) */
