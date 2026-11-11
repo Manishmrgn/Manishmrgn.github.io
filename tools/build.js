@@ -45,7 +45,7 @@ function layout({ title, desc, url, image, body, b = '../', cur }) {
   <link rel="stylesheet" href="${b}css/style.css">
   <script defer src="${b}js/theme.js"></script>
 </head>
-<body>
+<body class="sub">
   <div class="page">
     <nav class="nav" aria-label="site">${nav}</nav>
     <main>

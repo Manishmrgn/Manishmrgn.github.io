@@ -11,6 +11,7 @@
     { slug: 'sft-data', title: 'Synthetic SFT data', where: 'Dimaag-AI', year: 2026,
       oneLiner: 'Generating fine-tuning data for a domain-specific LLM tool-calling assistant.',
       tags: ['llm', 'sft', 'data'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       overview: {
         problem: 'a tool-calling assistant needs training dialogues that match what its backend really returns, and hand-written ones drift from that.',
         built: [
@@ -28,6 +29,7 @@
     { slug: 'agent-harness', title: 'Qwen3 agent harness', where: 'Dimaag-AI', year: 2026,
       oneLiner: 'A harness that runs a Qwen3 32B agent with sandboxed code and context compaction.',
       tags: ['llm', 'agents', 'vlm'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       overview: {
         problem: 'an agent with many tools burns its context window on schemas and old turns before it does any work.',
         built: [
@@ -45,6 +47,7 @@
     { slug: 'price-forecasting', title: 'Price forecasting', where: 'ITC Infotech', year: 2025,
       oneLiner: 'Time series price forecasting for an agri business, with Type-2 fuzzy logic regression.',
       tags: ['forecasting', 'time series'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       overview: {
         problem: 'the ITC Ltd. agri business needed price forecasts it could plan around.',
         built: [
@@ -60,6 +63,7 @@
     { slug: 'ai-town', title: 'AI-Town narrative sim', where: 'personal', year: 2025,
       oneLiner: 'An AI-Town fantasy world where NPC conversations turn into story events.',
       tags: ['llm', 'llama-3', 'docker'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       overview: {
         problem: 'AI-Town characters talk, but nothing they say adds up to a story.',
         built: [
@@ -77,6 +81,7 @@
     { slug: 'raster', title: 'True-scale 3D from drones', where: 'IISc Aerospace (AIRL)', year: 2024,
       oneLiner: 'Marker detection and 3D cleanup that give drone reconstructions real-world scale.',
       tags: ['sfm', 'yolov8', 'aruco', 'unreal'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan (VIT)', 'advisor: Dr. Suresh Sundaram (IISc)'],
       pdf: 'assets/papers/raster-poster.pdf', pdfLabel: 'poster',
       overview: {
@@ -104,6 +109,7 @@
     { slug: 'nerf', title: 'NeRF, faster', where: 'IISc', year: 2024,
       oneLiner: 'CUDA kernels to speed up neural radiance field training.',
       tags: ['cuda', 'nerf', 'sfm'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       with: ['advisor: Dr. Suresh Sundaram'],
       overview: {
         problem: 'neural radiance fields give good 3D reconstructions but training them is slow.',
@@ -121,6 +127,7 @@
     { slug: 'debris', title: 'Beach trash from the air', where: 'VIT', year: 2024,
       oneLiner: 'Spotting coastal debris in drone images with YOLOv8 and Wise-IoU.',
       tags: ['yolov8', 'uav', 'wise-iou'],
+      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan'],
       pdf: 'assets/papers/uav-debris-paper.pdf', pdfLabel: 'paper',
       overview: {

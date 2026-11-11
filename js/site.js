@@ -96,6 +96,9 @@
     preview.querySelector('.preview-title').textContent = p.title;
     preview.querySelector('.preview-desc').textContent = p.oneLiner;
     preview.querySelector('.preview-tags').textContent = p.tags.join(' · ');
+    var media = preview.querySelector('.preview-media');
+    media.hidden = !p.media;
+    media.style.cssText = p.media ? 'border-style:solid;background:center/cover no-repeat url("' + encodeURI(p.media) + '")' : '';
   }
   if (PROJECTS.length) show(0);   // the panel is never empty; it keeps the last project you pointed at
 

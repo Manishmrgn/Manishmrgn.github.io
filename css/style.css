@@ -145,8 +145,8 @@ html:not([data-theme]) .theme-sw { display: none; }   /* no script, no switch */
 
 /* ───────── generated pages: projects/*.html, projects/index.html ───────── */
 /* generated pages have no stage: they scroll like a normal document */
-body:not(:has(.stage)) { overflow: auto; }
-.page:not(:has(.stage)) { height: auto; min-height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; }
+body.sub { overflow: auto; }
+body.sub .page { height: auto; min-height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; }
 .page > main:not(.stage) { max-width: 46em; width: 100%; padding: 28px 0 40px; }
 main h1 { font-size: 34px; font-weight: 400; line-height: 1.15; letter-spacing: -0.005em; }
 main h2 { font-size: 16px; font-weight: 400; font-style: italic; color: var(--ink-2); }
