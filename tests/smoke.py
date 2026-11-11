@@ -811,6 +811,8 @@ def split_checks(browser):
     page.reload()
     check("theme: 404 persists across reload", th() == "dark" and chk() == "true")
     check("theme: 404 zero errors", not page.errors, "; ".join(page.errors))
+    l404 = page.eval_on_selector_all("main a", "els => els.map(a => a.getAttribute('href'))")
+    check("404: back home · projects · resume links", l404 == ["/", "/projects/", "/assets/Manishwaran-Murugan-Resume.pdf"], str(l404))
     page.close()
 
     # every split position x both tabs x both desktop sizes: one screen, nothing clipped, panes side by side

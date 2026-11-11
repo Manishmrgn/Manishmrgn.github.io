@@ -35,7 +35,7 @@ Source assets live in ../portfolio-voxel-design; screenshots in ../portfolio-vox
   "reset hole" hides then, since two buttons just fit the 212px side column.
 - Smoke test runs with `uv run --with playwright python tests/smoke.py` (uses installed Chrome; no Chromium download).
 
-- Resume at assets/resume.pdf (footer link). Papers live in assets/papers/ and show on each project page (projects/<slug>.html): raster-poster.pdf (IISc RASTER
+- Resume at assets/Manishwaran-Murugan-Resume.pdf (footer link). Papers live in assets/papers/ and show on each project page (projects/<slug>.html): raster-poster.pdf (IISc RASTER
   poster, as-is) and uav-debris-paper.pdf (VIT UAV debris paper — a copy with all four authors' emails redacted; the
   original is in ~/Documents/Resume/Context/IISC; not found on IEEE Xplore as of 2026-11-10, so this is its first public copy).
 

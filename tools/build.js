@@ -55,7 +55,7 @@ ${body}
       <p class="foot-line">
         <a href="https://github.com/Manishmrgn">github</a> ·
         <a href="https://www.linkedin.com/in/Manishmrgn">linkedin</a> ·
-        <a href="${b}assets/resume.pdf" target="_blank" rel="noopener">resume</a> ·
+        <a href="${b}assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume</a> ·
         ${THEME_SW}
       </p>
     </footer>

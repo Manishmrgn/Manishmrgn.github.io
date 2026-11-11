@@ -25,6 +25,7 @@ main{text-align:center;max-width:32rem}
 h1{font-weight:400;font-size:clamp(26px,4.5vw,38px);line-height:1.2;margin:0 0 22px}
 a{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px}
 a:hover,a:focus-visible{color:var(--ink)}
+.nav404{margin:0;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;color:var(--muted)}
 @media (prefers-color-scheme:dark){:root{--paper:#141413;--ink:#eceae3;--muted:#8f8d85;--accent:#3cc79c}}
 :root[data-theme=light]{--paper:#f5f4ef;--ink:#1c1c1a;--muted:#6a6860;--accent:#14775a;color-scheme:light}
 :root[data-theme=dark]{--paper:#141413;--ink:#eceae3;--muted:#8f8d85;--accent:#3cc79c;color-scheme:dark}
@@ -61,7 +62,7 @@ a:hover,a:focus-visible{color:var(--ink)}
 <polygon points="118.8,50.2 111.6,54.4 111.6,79.6 118.8,75.4" fill="#7A2F17"/></svg>
 <p class="code">404 &middot; not found</p>
 <h1>the dog couldn&rsquo;t find this page either.</h1>
-<a href="/">&larr; back home</a>
+<p class="nav404"><a href="/">&larr; back home</a> &middot; <a href="/projects/">projects</a> &middot; <a href="/assets/Manishwaran-Murugan-Resume.pdf" target="_blank" rel="noopener">resume</a></p>
 </main>
 <button type="button" class="theme-sw" id="theme-toggle" role="switch" aria-checked="false" aria-label="dark mode" title="switch to dark"><span class="knob" aria-hidden="true"><svg class="sun" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M4 0h2v1h-2zM1 1h1v1h-1zM4 1h2v1h-2zM8 1h1v1h-1zM3 2h4v1h-4zM2 3h6v1h-6zM0 4h10v1h-10zM0 5h10v1h-10zM2 6h6v1h-6zM3 7h4v1h-4zM1 8h1v1h-1zM4 8h2v1h-2zM8 8h1v1h-1zM4 9h2v1h-2z"/></svg><svg class="moon" viewBox="0 0 10 10" width="10" height="10" shape-rendering="crispEdges" fill="currentColor"><path d="M3 0h4v1h-4zM2 1h3v1h-3zM1 2h3v1h-3zM1 3h3v1h-3zM1 4h3v1h-3zM1 5h3v1h-3zM2 6h3v1h-3zM3 7h6v1h-6zM4 8h4v1h-4z"/></svg></span></button>
 <script>
