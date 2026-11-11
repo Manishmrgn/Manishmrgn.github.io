@@ -102,8 +102,8 @@
       },
       figures: [
         { src: 'assets/projects/raster/pipeline.jpg', alt: 'flow diagram of the RASTER pipeline from input images and fiducial detection to an absolute-scaled, oriented 3D reconstruction', caption: 'the raster pipeline, from marker detection to a scaled mesh' },
-        { src: 'assets/projects/raster/rescaled.jpg', alt: 'two views of a crate mesh with an aruco marker, measured before and after rescaling, with an 18 cm real marker and a scale factor of 4.1425', caption: 'marker edges measured 4 cm before rescale, 18 cm after' },
-        { src: 'assets/projects/raster/detect.jpg', alt: 'synthetic scene of a small hut on a wooden deck with a green box around it and two aruco markers on the floor', caption: 'aruco markers and the object found in a synthetic scene' }
+        { src: 'assets/projects/raster/rescaled.jpg', alt: 'two views of a crate mesh with an aruco marker, measured before and after rescaling, with an 18 cm real marker and a scale factor of 4.1425', caption: 'the marker measures about 4 cm before rescaling and 18 cm after' },
+        { src: 'assets/projects/raster/clouds.jpg', alt: 'two point clouds of a skull model in orange: the left one still has stray points scattered around it, the right one is clean', caption: 'background subtraction: stray points left over (left) vs cleaned out (right)' }
       ] },
 
     { slug: 'nerf', title: 'NeRF, faster', where: 'IISc', year: 2024,
@@ -145,8 +145,8 @@
         ]
       },
       figures: [
-        { src: 'assets/projects/debris/detections.jpg', alt: 'four aerial photos of water and beach with red boxes around detected bottles and other trash', caption: 'yolov8 detections on drone shots of water and shoreline' },
-        { src: 'assets/projects/debris/pr-curves.jpg', alt: 'three precision-recall curves for yolov8m: standard 0.818, with tuned hyperparameters 0.847, with hyperparameters and wiou 0.861 mAP@0.5', caption: 'yolov8m precision-recall: 0.818, 0.847, then 0.861 mAP@0.5' }
+        { src: 'assets/projects/debris/detections.jpg', alt: 'two aerial photos, one of green water and one of a debris-covered shore, with red boxes and confidence scores around detected trash', caption: 'yolov8 detections on drone shots of water and shoreline' },
+        { src: 'assets/projects/debris/pr-curves.jpg', alt: 'two precision-recall curves for yolov8m, one at 0.818 mAP@0.5 and one at 0.861 mAP@0.5, the second hugging the top right corner more closely', caption: 'yolov8m precision-recall: 0.818 mAP@0.5 standard, 0.861 with tuned hyperparameters and wiou' }
       ] }
   ];
   // ═══════════════════════════════════════════════════════════════════════════
