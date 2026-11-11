@@ -78,14 +78,15 @@
 
     { slug: 'raster', title: 'True-scale 3D from drones', where: 'IISc Aerospace (AIRL)', year: 2024,
       oneLiner: 'Marker detection and 3D cleanup that give drone reconstructions real-world scale.',
-      tags: ['sfm', 'yolov8', 'aruco', 'unreal'],
+      tags: ['sfm', 'nerf', 'yolov8', 'aruco'],
       media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan (VIT)', 'advisor: Dr. Suresh Sundaram (IISc)'],
       pdf: 'assets/papers/raster-poster.pdf', pdfLabel: 'poster',
       overview: {
-        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and our three-person capstone team built its detection and subtraction parts, and my part was the detection and the point-cloud subtraction.',
+        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and my part, with a three-person capstone team, was the marker detection and the point-cloud subtraction.',
         built: [
           'marker detection with YOLOv8 and cv2.aruco, feeding RASTER\'s absolute-scale step',
+          'the end-to-end reconstruction: structure from motion in Meshroom alongside a CUDA-optimized NeRF (Nerfstudio), scaled by the ArUco markers',
           'synthetic training data from Unreal Engine 5, annotated automatically, with randomized markers, poses, lighting, blur and lens distortion',
           '3D background subtraction (parallelized KD-Tree/FLANN and Octree) to pull an object out of a scene',
           'a real dataset shot with a DSLR, one image every 5 degrees around a crate carrying a marker (72 images per circle), plus Unreal-generated scenes',
@@ -103,23 +104,6 @@
         { src: 'assets/projects/raster/rescaled.jpg', alt: 'two views of a crate mesh with an aruco marker, measured before and after rescaling, with an 18 cm real marker and a scale factor of 4.1425', caption: 'the marker measures about 4 cm before rescaling and 18 cm after' },
         { src: 'assets/projects/raster/clouds.jpg', alt: 'two point clouds of a skull model in orange: the left one still has stray points scattered around it, the right one is clean', caption: 'background subtraction: stray points left over (left) vs cleaned out (right)' }
       ] },
-
-    { slug: 'nerf', title: 'NeRF + SfM, to real scale', where: 'IISc', year: 2024,
-      oneLiner: 'End-to-end 3D reconstruction with CUDA-optimized NeRF and structure from motion, with ArUco markers for true scale.',
-      tags: ['cuda', 'nerf', 'sfm'],
-      media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
-      with: ['advisor: Dr. Suresh Sundaram'],
-      overview: {
-        problem: 'neural radiance fields give good 3D reconstructions but training them is slow.',
-        built: [
-          'a CUDA-optimized NeRF, with Nerfstudio in the toolchain',
-          'an end-to-end 3D reconstruction flow alongside Structure from Motion (Meshroom), with ArUco-based metric calibration to recover true scale for as-built modeling'
-        ],
-        results: [
-          'the reconstruction recovers true scale, which as-built modeling needs'
-        ]
-      },
-      figures: [] },
 
     { slug: 'debris', title: 'Beach trash from the air', where: 'VIT', year: 2024,
       oneLiner: 'Spotting coastal debris in drone images with YOLOv8 and Wise-IoU.',

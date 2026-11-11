@@ -134,6 +134,10 @@ function main() {
     if (check) { if (!fs.existsSync(f) || fs.readFileSync(f, 'utf8') !== out[k]) stale.push(k); }
     else { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, out[k]); }
   });
+  const dir = path.join(root, 'projects');   // pages of projects removed from js/projects.js
+  (fs.existsSync(dir) ? fs.readdirSync(dir) : []).filter(n => n.endsWith('.html') && !out['projects/' + n]).forEach(n => {
+    if (check) stale.push('projects/' + n); else fs.unlinkSync(path.join(dir, n));
+  });
   if (stale.length) { console.error('stale:\n' + stale.join('\n')); process.exit(1); }
 }
 

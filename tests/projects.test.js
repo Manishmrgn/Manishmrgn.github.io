@@ -41,8 +41,8 @@ test('pdf and pdfLabel are both present or both absent', () => {
   PROJECTS.forEach(p => assert.strictEqual(!!p.pdf, !!p.pdfLabel, p.slug));
 });
 
-test('there are 7 projects, newest year first', () => {
-  assert.strictEqual(PROJECTS.length, 7);
+test('there are 6 projects, newest year first', () => {
+  assert.strictEqual(PROJECTS.length, 6);
   PROJECTS.forEach((p, i) => assert.ok(!i || p.year <= PROJECTS[i - 1].year, p.slug));
 });
 
@@ -144,6 +144,19 @@ test('build --check exits 1 and names a stale page', () => {
   const r = build(d, '--check');
   assert.strictEqual(r.status, 1);
   assert.ok(r.stderr.includes('projects/raster.html'), r.stderr);
+  fs.rmSync(d, { recursive: true });
+});
+
+test('a page left over from a removed project is flagged by --check and deleted by build', () => {
+  const d = tempSite();
+  assert.strictEqual(build(d).status, 0);
+  const old = path.join(d, 'projects', 'old-project.html');
+  fs.writeFileSync(old, '<!doctype html>');
+  const r = build(d, '--check');
+  assert.strictEqual(r.status, 1);
+  assert.ok(r.stderr.includes('projects/old-project.html'), r.stderr);
+  assert.strictEqual(build(d).status, 0);
+  assert.ok(!fs.existsSync(old), 'leftover page still there after build');
   fs.rmSync(d, { recursive: true });
 });
 
