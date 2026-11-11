@@ -121,6 +121,35 @@ test('index.html and demos.html carry the same header links as the generated pag
     assert.ok(fs.readFileSync(path.join(root, f), 'utf8').includes(topRight('', cur)), f + ' header differs from topRight() in tools/build.js'));
 });
 
+test('back link: labelled for a same-site referrer, plain link otherwise', () => {
+  const backLabel = require(path.join(root, 'js', 'back.js'));
+  const F = 'file:///Users/me/site/', H = 'https://manishwaranmurugan.com/';
+  [[F + 'index.html', F + 'projects/raster.html', '← home'],
+   [F + 'index.html#sfm', F + 'projects/raster.html', '← home'],
+   [F + 'projects/index.html', F + 'projects/raster.html', '← all projects'],
+   [F + 'projects/debris.html', F + 'projects/raster.html', '← back'],
+   [F + 'demos.html', F + 'projects/raster.html', '← back'],
+   ['file:///Users/me/other/index.html', F + 'projects/raster.html', null],
+   [H, H + 'projects/raster.html', '← home'],
+   [H + 'index.html', H + 'projects/raster.html', '← home'],
+   [H + 'projects/', H + 'projects/raster.html', '← all projects'],
+   [H + 'projects/index.html?x=1', H + 'projects/raster.html', '← all projects'],
+   [H + 'projects/ai-town.html', H + 'projects/raster.html', '← back'],
+   ['https://www.google.com/', H + 'projects/raster.html', null],
+   ['http://manishwaranmurugan.com/', H + 'projects/raster.html', null],
+   ['', H + 'projects/raster.html', null]
+  ].forEach(([ref, here, want]) => assert.strictEqual(backLabel(ref, here), want, ref));
+});
+
+test('every project page has one back link, a plain link to the projects index, and loads js/back.js', () => {
+  PROJECTS.forEach(p => {
+    const h = pages['projects/' + p.slug + '.html'];
+    assert.strictEqual((h.match(/class="back"/g) || []).length, 1, p.slug);
+    assert.ok(h.includes('<p class="back"><a href="index.html">← all projects</a></p>'), p.slug);
+    assert.ok(h.includes('<script defer src="../js/back.js"></script>'), p.slug);
+  });
+});
+
 test('build --check passes', () => {
   const r = spawnSync('node', [path.join(root, 'tools', 'build.js'), '--check'], { encoding: 'utf8' });
   assert.strictEqual(r.status, 0, r.stdout + r.stderr);

@@ -627,6 +627,39 @@ def header_checks(browser):
             page.close()
 
 
+def back_link_checks(browser):
+    """The project page's back link, over a local http server (file:// pages send no referrer)."""
+    import socket, time, urllib.request
+    with socket.socket() as so:
+        so.bind(("127.0.0.1", 0)); port = so.getsockname()[1]
+    srv = subprocess.Popen([sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1", "--directory", str(SITE_INDEX.parent)],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    base = f"http://127.0.0.1:{port}/"
+    try:
+        for _ in range(50):
+            try: urllib.request.urlopen(base, timeout=1); break
+            except OSError: time.sleep(0.1)
+        page = browser.new_page(viewport={"width": DESKTOP_VIEWPORT[0], "height": DESKTOP_VIEWPORT[1]})
+        page.set_default_timeout(PAGE_TIMEOUT_MS)
+        page.route("**/fonts.g*/**", lambda r: r.fulfill(status=200, content_type="text/css", body=""))
+        back = lambda: [page.inner_text(".back a"), page.get_attribute(".back a", "href")]
+        page.goto(base + "projects/raster.html"); page.wait_for_load_state()
+        check("back link: opened directly, it is a plain link to all projects", back() == ["← all projects", "index.html"], str(back()))
+        page.goto(base); page.wait_for_timeout(SETTLE_MS)
+        page.click('#project-list a.row[href="projects/raster.html"]'); page.wait_for_load_state()
+        check("back link: from home it reads '← home'", back()[0] == "← home", str(back()))
+        page.click(".back a"); page.wait_for_load_state()
+        check("back link: from home it goes back home", page.url == base, page.url)
+        page.goto(base + "projects/index.html"); page.wait_for_load_state()
+        page.click('.cards h2 a[href="raster.html"]'); page.wait_for_load_state()
+        check("back link: from the projects index it reads '← all projects'", back()[0] == "← all projects", str(back()))
+        page.click(".back a"); page.wait_for_load_state()
+        check("back link: from the projects index it goes back there", page.url == base + "projects/index.html", page.url)
+        page.close()
+    finally:
+        srv.terminate(); srv.wait()
+
+
 def click_tile(page, tile):
     pos = page.evaluate(TILE_JS, list(tile))
     page.mouse.click(pos["x"], pos["y"])
@@ -1006,6 +1039,7 @@ def main():
 
         header_checks(browser)
         project_checks(browser)
+        back_link_checks(browser)
         demos_checks(browser)
         sfm_checks(browser)
         split_checks(browser)

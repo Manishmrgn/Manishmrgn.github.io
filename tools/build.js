@@ -41,7 +41,7 @@ function topRight(b, cur) {
 }
 
 // b = path prefix back to the site root ('../' for projects/, '' for root pages); cur = 'projects' | 'demos'
-function layout({ title, desc, url, image, body, b = '../', cur }) {
+function layout({ title, desc, url, image, body, b = '../', cur, scripts = [] }) {
   const t = esc(title), d = esc(desc);
   return `<!DOCTYPE html>
 <html lang="en">
@@ -69,7 +69,7 @@ function layout({ title, desc, url, image, body, b = '../', cur }) {
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Silkscreen&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="${b}css/style.css">
   <script defer src="${b}js/theme.js"></script>
-  <script defer src="${b}js/site.js"></script>
+  <script defer src="${b}js/site.js"></script>${scripts.map(j => `\n  <script defer src="${b}${j}"></script>`).join('')}
 </head>
 <body class="sub">
   <div class="page">
@@ -115,10 +115,9 @@ function projectPage(p) {
           <section><h2>what I built</h2>${list(p.overview.built)}</section>
           <section><h2>results</h2>${list(p.overview.results)}</section>
         </div>${fig}${pdf}
-      </article>
-      ${back}`;
+      </article>`;
   return layout({
-    title: p.title + ' — Manishwaran Murugan', desc: p.oneLiner, cur: 'projects',
+    title: p.title + ' — Manishwaran Murugan', desc: p.oneLiner, cur: 'projects', scripts: ['js/back.js'],
     url: SITE + 'projects/' + p.slug + '.html',
     image: p.figures[0] ? SITE + p.figures[0].src : null, body
   });
