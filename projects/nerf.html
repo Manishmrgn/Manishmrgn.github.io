@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NeRF, faster — Manish Murugan</title>
-  <meta name="description" content="CUDA kernels to speed up neural radiance field training.">
+  <title>NeRF + SfM, to real scale — Manish Murugan</title>
+  <meta name="description" content="End-to-end 3D reconstruction with CUDA-optimized NeRF and structure from motion, with ArUco markers for true scale.">
   <meta name="color-scheme" content="light dark">
   <link rel="canonical" href="https://manishmrgn.github.io/projects/nerf.html">
   <meta name="theme-color" id="tc-light" content="#f5f4ef" media="(prefers-color-scheme: light)">
@@ -14,8 +14,8 @@
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Manish Murugan">
-  <meta property="og:title" content="NeRF, faster — Manish Murugan">
-  <meta property="og:description" content="CUDA kernels to speed up neural radiance field training.">
+  <meta property="og:title" content="NeRF + SfM, to real scale — Manish Murugan">
+  <meta property="og:description" content="End-to-end 3D reconstruction with CUDA-optimized NeRF and structure from motion, with ArUco markers for true scale.">
   <meta property="og:url" content="https://manishmrgn.github.io/projects/nerf.html">
   <meta property="og:image" content="https://manishmrgn.github.io/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -31,13 +31,13 @@
     <main>
       <p class="back"><a href="index.html">← all projects</a></p>
       <article class="proj">
-        <h1>NeRF, faster</h1>
+        <h1>NeRF + SfM, to real scale</h1>
         <p class="proj-meta">IISc · 2024 · with advisor: Dr. Suresh Sundaram</p>
         <ul class="proj-tags"><li>cuda</li><li>nerf</li><li>sfm</li></ul>
         <div class="proj-grid">
           <section><h2>problem</h2><p>neural radiance fields give good 3D reconstructions but training them is slow.</p></section>
           <section><h2>what I built</h2><ul><li>a CUDA-optimized NeRF, with Nerfstudio in the toolchain</li><li>an end-to-end 3D reconstruction flow alongside Structure from Motion (Meshroom), with ArUco-based metric calibration to recover true scale for as-built modeling</li></ul></section>
-          <section><h2>results</h2><ul><li>a working end-to-end reconstruction that comes out at true scale</li><li>Meshroom (SfM) supplies the meshes and camera poses, Nerfstudio the radiance-field side, and ArUco markers fix the scale</li></ul></section>
+          <section><h2>results</h2><ul><li>the reconstruction recovers true scale, which as-built modeling needs</li></ul></section>
         </div>
       </article>
       <p class="back"><a href="index.html">← all projects</a></p>

@@ -20,8 +20,7 @@
           'regex validators with corrective retry loops, in place of hard-coded output patches'
         ],
         results: [
-          'synthetic artifacts get caught and retried instead of leaking into the training data',
-          'the routing constraints are versioned YAML, so each change to them is tracked'
+          'synthetic artifacts get caught and retried instead of leaking into the training data'
         ]
       },
       figures: [] },
@@ -72,8 +71,7 @@
           'player-NPC interactions that can change the narrative'
         ],
         results: [
-          'NPC dialogue and world updates come from an offline LLaMA-3 model running in Docker',
-          'player-NPC interactions can change the narrative'
+          'the whole loop runs offline, on a local LLaMA-3 model'
         ]
       },
       figures: [] },
@@ -85,7 +83,7 @@
       with: ['Meghana V Gaonkar', 'Leona E Joseph', 'advisor: Dr. R Balamurugan (VIT)', 'advisor: Dr. Suresh Sundaram (IISc)'],
       pdf: 'assets/papers/raster-poster.pdf', pdfLabel: 'poster',
       overview: {
-        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and my capstone work built its detection and subtraction parts.',
+        problem: 'structure from motion rebuilds a scene but not its size, so a model made from drone photos has no real-world scale, and rescaling by hand is slow and error-prone. RASTER is the AIRL lab\'s absolute-scale pipeline (Lakshay Khurana and Dr. Suresh Sundaram), and our three-person capstone team built its detection and subtraction parts, and my part was the detection and the point-cloud subtraction.',
         built: [
           'marker detection with YOLOv8 and cv2.aruco, feeding RASTER\'s absolute-scale step',
           'synthetic training data from Unreal Engine 5, annotated automatically, with randomized markers, poses, lighting, blur and lens distortion',
@@ -106,8 +104,8 @@
         { src: 'assets/projects/raster/clouds.jpg', alt: 'two point clouds of a skull model in orange: the left one still has stray points scattered around it, the right one is clean', caption: 'background subtraction: stray points left over (left) vs cleaned out (right)' }
       ] },
 
-    { slug: 'nerf', title: 'NeRF, faster', where: 'IISc', year: 2024,
-      oneLiner: 'CUDA kernels to speed up neural radiance field training.',
+    { slug: 'nerf', title: 'NeRF + SfM, to real scale', where: 'IISc', year: 2024,
+      oneLiner: 'End-to-end 3D reconstruction with CUDA-optimized NeRF and structure from motion, with ArUco markers for true scale.',
       tags: ['cuda', 'nerf', 'sfm'],
       media: '',   // optional gif/image/mp4 poster in assets/, shown in the home hover preview
       with: ['advisor: Dr. Suresh Sundaram'],
@@ -118,8 +116,7 @@
           'an end-to-end 3D reconstruction flow alongside Structure from Motion (Meshroom), with ArUco-based metric calibration to recover true scale for as-built modeling'
         ],
         results: [
-          'a working end-to-end reconstruction that comes out at true scale',
-          'Meshroom (SfM) supplies the meshes and camera poses, Nerfstudio the radiance-field side, and ArUco markers fix the scale'
+          'the reconstruction recovers true scale, which as-built modeling needs'
         ]
       },
       figures: [] },
@@ -135,18 +132,17 @@
         built: [
           'a benchmark of five YOLOv8 variants (n, s, m, l, x) with and without a Wise-IoU loss',
           'hyperparameter tuning and custom augmentation on a dataset combining two UAV sources (772 beach images and 40 river images), all labelled as one class, garbage',
-          'offline augmentation of 40 annotated images into 120 more (blur, rotation, scale), for 892 images split 636 / 128 / 128 into train, validation and test'
+          'the 40 river images were augmented (blur, rotation, scale) into 120, for 892 images in all (772 + 120), split 636 / 128 / 128 into train, validation and test'
         ],
         results: [
           'YOLOv8m went from 81.7% to 86.1% mAP@50',
-          'Wise-IoU hurt the largest models',
-          'YOLOv8l and YOLOv8x lost a lot of precision with Wise-IoU, which the paper puts down to computational limits',
+          'Wise-IoU hurt the largest models: YOLOv8l and YOLOv8x lost a lot of precision, and the paper suggests it may not scale well with larger models',
           'hyperparameter tuning (rotation 45 degrees, flips 0.5 and 0.6, MixUp 0.05) lifted YOLOv8s from 80.8% to 83.5% mAP@50'
         ]
       },
       figures: [
         { src: 'assets/projects/debris/detections.jpg', alt: 'two aerial photos, one of green water and one of a debris-covered shore, with red boxes and confidence scores around detected trash', caption: 'yolov8 detections on drone shots of water and shoreline' },
-        { src: 'assets/projects/debris/pr-curves.jpg', alt: 'two precision-recall curves for yolov8m, one at 0.818 mAP@0.5 and one at 0.861 mAP@0.5, the second hugging the top right corner more closely', caption: 'yolov8m precision-recall: 0.818 mAP@0.5 standard, 0.861 with tuned hyperparameters and wiou' }
+        { src: 'assets/projects/debris/pr-curves.jpg', alt: 'two precision-recall curves for yolov8m, one at 0.818 mAP@0.5 and one at 0.861 mAP@0.5, the second hugging the top right corner more closely', caption: 'yolov8m precision-recall curves, standard vs tuned hyperparameters and wiou' }
       ] }
   ];
   // ═══════════════════════════════════════════════════════════════════════════

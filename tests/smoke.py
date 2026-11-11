@@ -6,6 +6,8 @@ pauses the dog, dragging a camera changes the 3D points, refine, film it, densif
 messages. Then the "gradient golf" tab: switching, a swing on hole 1 sinking within par, the optimizer
 chips, playing by keyboard, and one screen at the default and expanded split in light and dark.
 Exits non-zero on any FAIL."""
+import os
+import subprocess
 import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -57,7 +59,7 @@ GOLF_WIDE_MIN = 500               # WIDE_MIN in js/golf.js: from this panel widt
 GOLF_CART_URL = "https://sketchfab.com/3d-models/golf-cart-db115793a8274dc18b2b277bf6c97703"
 # ═══════════════════════════════════════════════════════════════════════════
 
-PROJECT_SLUGS = ["sft-data", "agent-harness", "price-forecasting", "ai-town", "raster", "nerf", "debris"]   # keep in step with js/projects.js
+PROJECT_SLUGS = subprocess.run(["node", "-p", "require('./js/projects.js').map(p=>p.slug).join(',')"], capture_output=True, text=True, check=True, cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))).stdout.strip().split(",")
 PROJECT_PDF_SLUG = "raster"       # has a pdf; the others (e.g. ai-town) have none
 
 FAILS = []
